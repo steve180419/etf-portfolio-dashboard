@@ -6,7 +6,7 @@ from datetime import datetime
 from io import BytesIO
 
 # =====================================================
-# 鵬鵬的退休計畫系統 v10.3
+# 鵬鵬的退休計畫系統 v10.4
 # 重點：密碼保護、資料庫備份、KPI 整數顯示、配息行事曆、損益排行、Excel 匯出
 # =====================================================
 
@@ -80,7 +80,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休計畫系統 v10.3", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休計畫系統 v10.4", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -669,7 +669,22 @@ else:
                 c_2.warning(f"🔤 {rsym}")
                 c_3.write(f"本金: ${ramt:,.0f} (費: ${rfe:,.0f})")
                 c_4.write(f"股數: {rsh:,.0f} 股")
+                
+                with st.expander(f"✏️ 修改 #{rid}"):
+                    new_date = st.text_input("日期", value=str(rdate), key=f"edit_date_{rid}")
+                    new_amt = st.number_input("本金", value=float(ramt), key=f"edit_amt_{rid}")
+                    new_sh = st.number_input("股數", value=float(rsh), key=f"edit_sh_{rid}")
+                    new_fee = st.number_input("手續費", value=float(rfe), key=f"edit_fee_{rid}")
+                    if st.button("💾 儲存修改", key=f"save_tx_{rid}"):
+                        c.execute(
+                            "UPDATE tx_v74 SET date=?, amount=?, shares=?, fee=? WHERE id=?",
+                            (new_date, new_amt, new_sh, new_fee, rid)
+                        )
+                        conn.commit()
+                        st.rerun()
+
                 if c_btn.button("🗑️ 刪除", key=f"del_tx_{rid}"):
+
                     c.execute("DELETE FROM tx_v74 WHERE id = ?", (rid,))
                     conn.commit()
                     st.rerun()
