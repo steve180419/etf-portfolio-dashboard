@@ -60,6 +60,43 @@ conn.commit()
 # 2. 網頁佈局設定
 st.set_page_config(page_title="大作手 ETF 智慧系統 v10.1", layout="wide")
 
+# ===== 網站密碼保護 =====
+def check_password():
+    """使用 Streamlit Secrets 的簡易密碼保護。"""
+    if "authenticated" not in st.session_state:
+        st.session_state["authenticated"] = False
+
+    if st.session_state["authenticated"]:
+        return True
+
+    st.title("🔒 ETF 資產管理系統")
+    st.caption("請輸入密碼後再進入系統。")
+
+    try:
+        app_password = st.secrets.get("APP_PASSWORD", None)
+    except Exception:
+        app_password = None
+
+    if not app_password:
+        st.error("尚未設定 APP_PASSWORD。請到 Streamlit Cloud → App settings → Secrets 新增 APP_PASSWORD。")
+        st.code('APP_PASSWORD = "請換成你的密碼"', language="toml")
+        return False
+
+    password = st.text_input("請輸入存取密碼", type="password")
+
+    if st.button("登入"):
+        if password == app_password:
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("密碼錯誤，請再試一次。")
+
+    return False
+
+
+if not check_password():
+    st.stop()
+
 # KPI 卡片美化
 st.markdown("""
 <style>
@@ -170,6 +207,10 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 
 # --- 側邊欄：後台輸入 ---
 st.sidebar.header("⚙️ 系統資料輸入後台")
+if st.sidebar.button("🚪 登出"):
+    st.session_state["authenticated"] = False
+    st.rerun()
+
 action_type = st.sidebar.selectbox(
     "請選擇輸入類型",
     ["➕ 新增買入庫存", "💰 記錄收到配息", "🔮 設定未來預估配息率", "📅 設定未來配息公告"]
