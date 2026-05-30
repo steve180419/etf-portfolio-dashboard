@@ -171,6 +171,58 @@ div[data-testid="stDataFrame"]{
 """, unsafe_allow_html=True)
 
 
+
+st.markdown("""
+<style>
+.stApp{
+    background: #f4f7fb;
+}
+.main .block-container{
+    padding-top:0.8rem;
+    max-width:1600px;
+}
+h1{
+    font-size:2.4rem !important;
+    font-weight:800 !important;
+    color:#1f2937;
+}
+h2,h3{
+    font-weight:700 !important;
+}
+[data-testid="metric-container"]{
+    background:white !important;
+    border:none !important;
+    border-radius:22px !important;
+    padding:22px !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.08) !important;
+}
+[data-testid="stSidebar"]{
+    background:#ffffff;
+    border-right:1px solid #e5e7eb;
+}
+div[data-testid="stDataFrame"]{
+    background:white;
+    border-radius:20px;
+    padding:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+}
+.stTabs [data-baseweb="tab-list"]{
+    gap:10px;
+}
+.stTabs [data-baseweb="tab"]{
+    background:white;
+    border-radius:12px;
+    padding:10px 18px;
+    font-weight:700;
+}
+.stButton>button{
+    border-radius:12px;
+    font-weight:700;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 st.title("📊 鵬鵬的退休計畫系統")
 st.caption("v10.2 備份保護版 · KPI 整數顯示 · Yahoo 批次報價快取 · 不需 Plotly · 損益排行 · Excel 匯出")
 
