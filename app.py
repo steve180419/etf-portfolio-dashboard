@@ -745,3 +745,53 @@ else:
                     c.execute("DELETE FROM dividend_calendar_v101 WHERE id = ?", (rid,))
                     conn.commit()
                     st.rerun()
+
+
+
+# =========================
+# v10.5 退休儀表板
+# =========================
+try:
+    st.markdown("---")
+    st.header("🎯 退休規劃中心")
+
+    col_a, col_b, col_c, col_d = st.columns(4)
+
+    current_age = col_a.number_input("目前年齡", 20, 80, 43)
+    retire_age = col_b.number_input("退休年齡", 40, 80, 55)
+    monthly_invest = col_c.number_input("每月投入金額", 0, 500000, 50000, step=1000)
+    target_asset = col_d.number_input("退休目標資產", 1000000, 100000000, 30000000, step=1000000)
+
+    years_left = max(retire_age - current_age, 0)
+
+    current_assets = float(t_val) if 't_val' in globals() else 0
+    annual_dividend = float(p['未來預估年現金'].sum()) if 'p' in globals() else 0
+
+    future_assets = current_assets
+    for _ in range(years_left):
+        future_assets = future_assets * 1.06 + monthly_invest * 12
+
+    retirement_gap = max(target_asset - current_assets, 0)
+    progress = min(current_assets / target_asset, 1.0)
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("目前總資產", f"${current_assets:,.0f}")
+    k2.metric("退休缺口", f"${retirement_gap:,.0f}")
+    k3.metric("55歲預估資產", f"${future_assets:,.0f}")
+    k4.metric("退休達成率", f"{progress*100:.1f}%")
+
+    st.progress(progress)
+
+    st.subheader("💰 配息覆蓋率")
+
+    monthly_need = st.number_input("退休每月生活費", 10000, 300000, 60000, step=5000)
+    passive_income = annual_dividend / 12
+    cover_rate = (passive_income / monthly_need * 100) if monthly_need else 0
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric("目前被動收入", f"${passive_income:,.0f}/月")
+    c2.metric("生活費需求", f"${monthly_need:,.0f}/月")
+    c3.metric("覆蓋率", f"{cover_rate:.1f}%")
+
+except Exception as e:
+    st.warning(f"退休模組載入失敗: {e}")
