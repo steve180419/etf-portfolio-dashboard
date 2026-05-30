@@ -437,11 +437,68 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
   .phase1-kpi-card .label{font-size:14px;}
   .phase1-kpi-card .note{font-size:12px;}
 }
+
+/* vNext layout repair: keep decorative images fully visible and out of text. */
+.phase1-kpi-card{
+    height:118px !important;
+    overflow:visible !important;
+    padding:16px 22px !important;
+    gap:18px !important;
+}
+.phase1-kpi-icon{
+    width:70px !important;
+    height:76px !important;
+    flex:0 0 70px !important;
+    background-size:contain !important;
+    background-position:center center !important;
+    background-repeat:no-repeat !important;
+    border-radius:0 !important;
+}
+.phase1-kpi-card .label{font-size:15px !important; margin-bottom:7px !important;}
+.phase1-kpi-card .value{font-size:26px !important;}
+.phase1-kpi-card .note{font-size:13px !important;}
+.phase1-panel{
+    min-height:246px !important;
+    overflow:hidden !important;
+    padding:24px 28px 22px 28px !important;
+}
+.phase1-bar{margin:14px 92px 30px 74px !important;}
+.phase1-stage{padding:0 92px 0 98px !important;}
+.phase1-stage:before{left:118px !important; right:118px !important;}
+.phase1-fox{left:22px !important; bottom:24px !important; width:60px !important;}
+.phase1-prince{right:28px !important; bottom:24px !important; width:52px !important;}
+.phase1-income{
+    min-height:246px !important;
+    padding-right:285px !important;
+}
+.phase1-income .income-row{
+    position:relative;
+    z-index:2;
+    height:62px !important;
+    margin:9px 0 !important;
+}
+.phase1-water{
+    right:14px !important;
+    bottom:0 !important;
+    width:218px !important;
+    max-height:190px !important;
+    z-index:1 !important;
+}
+@media (max-width:1500px){
+  .phase1-kpi-grid{gap:12px;}
+  .phase1-kpi-card{height:112px !important; padding:14px 18px !important; gap:14px !important;}
+  .phase1-kpi-icon{width:62px !important; height:68px !important; flex-basis:62px !important;}
+  .phase1-kpi-card .value{font-size:23px !important;}
+  .phase1-kpi-card .label{font-size:14px !important;}
+  .phase1-kpi-card .note{font-size:12px !important;}
+  .phase1-income{padding-right:255px !important;}
+  .phase1-water{width:205px !important;}
+}
 @media (max-width:1100px){
   .phase1-kpi-grid{grid-template-columns:repeat(2,1fr);}
   .phase1-main-grid{grid-template-columns:1fr;}
-  .phase1-income{padding-right:24px; padding-bottom:150px;}
-  .phase1-water{width:190px;}
+  .phase1-income{padding-right:28px !important; padding-bottom:150px !important;}
+  .phase1-water{width:190px !important;}
 }
 </style>
 """, unsafe_allow_html=True)
