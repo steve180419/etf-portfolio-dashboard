@@ -334,6 +334,102 @@ div[data-testid="stDataFrame"]{
 </style>
 """, unsafe_allow_html=True)
 
+
+# --- Phase 1 修正版：避免 Streamlit columns + HTML div 造成圖片被切、面板空白 ---
+st.markdown("""
+<style>
+header[data-testid="stHeader"]{height:0rem !important; background:transparent !important;}
+.main .block-container{
+    padding-top:0 !important;
+    padding-left:1.1rem !important;
+    padding-right:1.1rem !important;
+    max-width:100% !important;
+}
+.hero-wrap{
+    min-height:154px !important;
+    border-radius:0 0 28px 28px !important;
+    margin:0 0 16px 0 !important;
+    background-size:cover !important;
+    background-position:center center !important;
+    box-shadow:0 12px 26px rgba(31,44,63,.16);
+}
+.phase1-kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:14px;
+    margin:0 0 14px 0;
+}
+.phase1-kpi-card{
+    height:112px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 18px;
+    border-radius:17px;
+    background:rgba(255,253,245,.93);
+    border:1px solid #e8dcc0;
+    box-shadow:0 7px 18px rgba(70,50,20,.10);
+    overflow:hidden;
+}
+.phase1-kpi-card.green{background:linear-gradient(135deg,#fbfff3,#eef8e7); border-color:#bddcaf;}
+.phase1-kpi-card.blue{background:linear-gradient(135deg,#fbfeff,#edf7ff); border-color:#bdd7ea;}
+.phase1-kpi-card.gold{background:linear-gradient(135deg,#fffdf3,#fff4d9); border-color:#edd18d;}
+.phase1-kpi-card.purple{background:linear-gradient(135deg,#fffafd,#f5efff); border-color:#d7c8ec;}
+.phase1-kpi-card.peach{background:linear-gradient(135deg,#fffafa,#fff0e7); border-color:#e9c5b8;}
+.phase1-kpi-card img{width:74px; height:74px; object-fit:contain; flex:0 0 74px;}
+.phase1-kpi-card .label{font-weight:900; font-size:15px; margin-bottom:8px; color:#31552f; white-space:nowrap;}
+.phase1-kpi-card .value{font-weight:900; font-size:25px; color:#182033; line-height:1.05; white-space:nowrap;}
+.phase1-kpi-card .note{font-size:13px; color:#5f5a4b; margin-top:8px; white-space:nowrap;}
+.phase1-kpi-card .good{color:#137333 !important;}
+.phase1-kpi-card .bad{color:#b42318 !important;}
+.phase1-main-grid{
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:16px;
+    margin:2px 0 16px 0;
+}
+.phase1-panel{
+    min-height:214px;
+    border-radius:18px;
+    background:rgba(255,253,245,.94);
+    border:1px solid #e3d8b8;
+    box-shadow:0 7px 18px rgba(70,50,20,.10);
+    padding:22px 24px 16px 24px;
+    position:relative;
+    overflow:hidden;
+}
+.phase1-panel-title{font-weight:900; font-size:20px; color:#182033; margin-bottom:14px;}
+.phase1-progress-top{display:grid; grid-template-columns:1fr 1fr 1fr; align-items:end; gap:16px; margin-bottom:8px;}
+.phase1-mini-label{font-size:14px; color:#4f4a3b;}
+.phase1-mini-value{font-size:20px; font-weight:800; color:#182033; margin-top:2px;}
+.phase1-percent{text-align:center; font-size:34px; font-weight:900; color:#167334;}
+.phase1-bar{height:18px; border-radius:999px; background:#dfe9cf; overflow:hidden; margin:10px 78px 28px 60px;}
+.phase1-bar-fill{height:100%; border-radius:999px; background:linear-gradient(90deg,#72b856,#49a347);}
+.phase1-stage{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:0 70px 0 75px; color:#333; text-align:center; position:relative;}
+.phase1-stage:before{content:""; position:absolute; left:90px; right:95px; top:28px; height:2px; background:#d9cda9;}
+.phase1-stage-item{position:relative; z-index:1; font-size:13px; line-height:1.35;}
+.phase1-stage-item .emoji{font-size:31px; display:block; margin-bottom:2px;}
+.phase1-fox{position:absolute; left:10px; bottom:16px; width:72px;}
+.phase1-prince{position:absolute; right:22px; bottom:12px; width:58px;}
+.phase1-income{padding-right:220px; min-height:214px;}
+.phase1-income .income-row{
+    display:flex; align-items:center; gap:18px;
+    height:62px; padding:10px 18px; margin:8px 0;
+    border-radius:14px; background:rgba(241,238,202,.62); border:1px solid #ded7b5;
+}
+.phase1-income .income-icon{font-size:35px; width:42px; text-align:center;}
+.phase1-income .income-label{font-size:14px; color:#595443;}
+.phase1-income .income-value{font-size:21px; color:#182033; font-weight:900; margin-top:1px;}
+.phase1-water{position:absolute; right:0; bottom:0; width:245px; max-height:205px; object-fit:contain;}
+@media (max-width:1100px){
+  .phase1-kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .phase1-main-grid{grid-template-columns:1fr;}
+  .phase1-income{padding-right:24px; padding-bottom:150px;}
+  .phase1-water{width:190px;}
+}
+</style>
+""", unsafe_allow_html=True)
+
 def kpi_card(title, value, note="", asset_key="star", tone=""):
     img_b64 = UI_ASSETS.get(asset_key, UI_ASSETS["star"])
     st.markdown(f"""
@@ -694,56 +790,67 @@ else:
     t_unrealized = round(p['未實現損益'].sum())
     total_return = 0 if t_amt == 0 else ((t_val + t_div - t_amt) / t_amt) * 100
 
-    # 版面重構：上方 5 張核心 KPI 卡片
-    kpi_cols = st.columns(5)
-    with kpi_cols[0]:
-        kpi_card("總投入本金", f"${t_amt:,}", "含買入成本與手續費", "flag")
-    with kpi_cols[1]:
-        kpi_card("總資產現值", f"${t_val:,}", "Yahoo 即時報價估算", "prince_planet")
-    with kpi_cols[2]:
-        kpi_card("累積總配息", f"${t_div:,}", "已領取配息", "treasure")
-    with kpi_cols[3]:
-        kpi_card("未實現損益", f"${t_unrealized:+,}", "目前帳面損益", "rose", "good" if t_unrealized >= 0 else "bad")
-    with kpi_cols[4]:
-        kpi_card("總報酬率", f"{total_return:+.2f}%", "含配息總報酬", "star", "good" if total_return >= 0 else "bad")
-
-    # 退休目標進度 + 被動收入預估
+    # 版面重構：上方 5 張核心 KPI 卡片（修正版：整段 HTML 一次輸出，避免被 Streamlit 切版）
     target_asset_phase1 = 30000000
     progress_phase1 = min(t_val / target_asset_phase1, 1.0) if target_asset_phase1 else 0
     progress_pct_phase1 = progress_phase1 * 100
     annual_cash_phase1 = round(p['未來預估年現金'].sum())
+    cover_rate_phase1 = (annual_cash_phase1 / target_asset_phase1 * 100) if target_asset_phase1 else 0
+    bar_width_phase1 = max(2, min(progress_pct_phase1, 100))
+    unrealized_tone = "good" if t_unrealized >= 0 else "bad"
+    total_tone = "good" if total_return >= 0 else "bad"
 
-    progress_col, income_col = st.columns([1.15, .85])
-    with progress_col:
-        st.markdown('<div class="soft-panel planet-progress-panel">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">🎯 退休目標進度</div>', unsafe_allow_html=True)
-        a, b, ccc = st.columns([1,1,1])
-        a.metric("目標金額", f"${target_asset_phase1:,}")
-        b.metric("目前資產", f"${t_val:,}")
-        ccc.metric("達成率", f"{progress_pct_phase1:.1f}%")
-        st.progress(progress_phase1)
-        st.markdown("""
-        <div class="stage-line">
-          <div class="stage-item"><span class="stage-icon">🌱</span>幼苗<br>0~25%</div>
-          <div class="stage-item"><span class="stage-icon">🌿</span>成長<br>25~50%</div>
-          <div class="stage-item"><span class="stage-icon">🌳</span>茂盛<br>50~75%</div>
-          <div class="stage-item"><span class="stage-icon">🌲</span>財富森林<br>75~100%</div>
+    st.markdown(f"""
+    <div class="phase1-kpi-grid">
+      <div class="phase1-kpi-card green">
+        <img src="data:image/png;base64,{UI_ASSETS['flag']}" />
+        <div><div class="label">總投入本金</div><div class="value">${t_amt:,}</div><div class="note">含買入成本與手續費</div></div>
+      </div>
+      <div class="phase1-kpi-card blue">
+        <img src="data:image/png;base64,{UI_ASSETS['prince_planet']}" />
+        <div><div class="label">總資產現值</div><div class="value">${t_val:,}</div><div class="note">Yahoo 即時報價估算</div></div>
+      </div>
+      <div class="phase1-kpi-card gold">
+        <img src="data:image/png;base64,{UI_ASSETS['treasure']}" />
+        <div><div class="label">累積總配息</div><div class="value">${t_div:,}</div><div class="note">已領取配息</div></div>
+      </div>
+      <div class="phase1-kpi-card purple">
+        <img src="data:image/png;base64,{UI_ASSETS['rose']}" />
+        <div><div class="label">未實現損益</div><div class="value {unrealized_tone}">${t_unrealized:+,}</div><div class="note">目前帳面損益</div></div>
+      </div>
+      <div class="phase1-kpi-card peach">
+        <img src="data:image/png;base64,{UI_ASSETS['star']}" />
+        <div><div class="label">總報酬率</div><div class="value {total_tone}">{total_return:+.2f}%</div><div class="note">含配息總報酬</div></div>
+      </div>
+    </div>
+
+    <div class="phase1-main-grid">
+      <div class="phase1-panel">
+        <div class="phase1-panel-title">🎯 退休目標進度</div>
+        <div class="phase1-progress-top">
+          <div><div class="phase1-mini-label">目標金額</div><div class="phase1-mini-value">${target_asset_phase1:,}</div></div>
+          <div class="phase1-percent">{progress_pct_phase1:.1f}%</div>
+          <div style="text-align:right"><div class="phase1-mini-label">目前資產</div><div class="phase1-mini-value">${t_val:,}</div></div>
         </div>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        <div class="phase1-bar"><div class="phase1-bar-fill" style="width:{bar_width_phase1:.1f}%"></div></div>
+        <img class="phase1-fox" src="data:image/png;base64,{UI_ASSETS['fox']}" />
+        <img class="phase1-prince" src="data:image/png;base64,{UI_ASSETS['prince_stand']}" />
+        <div class="phase1-stage">
+          <div class="phase1-stage-item"><span class="emoji">🌱</span><b>幼苗</b><br>0~25%</div>
+          <div class="phase1-stage-item"><span class="emoji">🌿</span><b>成長</b><br>25~50%</div>
+          <div class="phase1-stage-item"><span class="emoji">🌳</span><b>茂盛</b><br>50~75%</div>
+          <div class="phase1-stage-item"><span class="emoji">🌲</span><b>財富森林</b><br>75~100%</div>
+        </div>
+      </div>
 
-    with income_col:
-        st.markdown('<div class="soft-panel">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">💰 預估被動收入（現金流）</div>', unsafe_allow_html=True)
-        st.markdown('<div class="income-illustration">', unsafe_allow_html=True)
-        ia, ib = st.columns(2)
-        ia.metric("預估每月現金流", f"${t_est_monthly_cash:,}")
-        ib.metric("預估年度現金流", f"${annual_cash_phase1:,}")
-        cover_rate_phase1 = (annual_cash_phase1 / target_asset_phase1 * 100) if target_asset_phase1 else 0
-        st.metric("配息覆蓋率", f"{cover_rate_phase1:.2f}%", "以 3,000 萬目標估算")
-        st.markdown("🌟 小提示：這裡先做首頁結構，後面再慢慢補卡通圖與完整導航。")
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+      <div class="phase1-panel phase1-income">
+        <div class="phase1-panel-title">💰 預估被動收入（現金流）</div>
+        <div class="income-row"><div class="income-icon">🌱</div><div><div class="income-label">預估每月現金流</div><div class="income-value">${t_est_monthly_cash:,}</div></div></div>
+        <div class="income-row"><div class="income-icon">💰</div><div><div class="income-label">預估年度現金流</div><div class="income-value">${annual_cash_phase1:,}</div></div></div>
+        <div class="income-row"><div class="income-icon">🌻</div><div><div class="income-label">配息覆蓋率</div><div class="income-value">{cover_rate_phase1:.2f}%</div></div></div>
+        <img class="phase1-water" src="data:image/png;base64,{UI_ASSETS['watering']}" />
+      </div>
+    </div>
 
     st.markdown("### 🌌 退休星球總覽")
 
