@@ -851,6 +851,7 @@ else:
         <img class="phase1-water" src="data:image/png;base64,{UI_ASSETS['watering']}" />
       </div>
     </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("### 🌌 退休星球總覽")
 
