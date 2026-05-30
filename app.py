@@ -6,8 +6,8 @@ from datetime import datetime
 from io import BytesIO
 
 # =====================================================
-# 大作手 ETF 智慧資產與配息管理系統 v10.1
-# 重點：KPI 全整數顯示、Yahoo 批次報價快取、配息行事曆、損益排行、Excel 匯出
+# 鵬鵬的退休計畫系統 v10.2
+# 重點：密碼保護、資料庫備份、KPI 整數顯示、配息行事曆、損益排行、Excel 匯出
 # =====================================================
 
 DB_NAME = "etf_portfolio.db"
@@ -58,7 +58,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="大作手 ETF 智慧系統 v10.1", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休計畫系統 v10.2", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -69,7 +69,7 @@ def check_password():
     if st.session_state["authenticated"]:
         return True
 
-    st.title("🔒 ETF 資產管理系統")
+    st.title("🔒 鵬鵬的退休計畫系統")
     st.caption("請輸入密碼後再進入系統。")
 
     try:
@@ -116,8 +116,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("📊 大作手 ETF 智慧資產與配息管理系統")
-st.caption("v10.1 配息行事曆版 · KPI 整數顯示 · Yahoo 批次報價快取 · 不需 Plotly · 損益排行 · Excel 匯出")
+st.title("📊 鵬鵬的退休計畫系統")
+st.caption("v10.2 備份保護版 · KPI 整數顯示 · Yahoo 批次報價快取 · 不需 Plotly · 損益排行 · Excel 匯出")
 
 # --- 共用函式 ---
 def clean_symbol(s, market_type="台灣股市 (自動補 .TW)"):
@@ -204,6 +204,24 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
             calendar_df.to_excel(writer, index=False, sheet_name="配息行事曆")
     return output.getvalue()
 
+
+# --- 側邊欄：資料庫備份 ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("🛡️ 資料備份")
+
+try:
+    with open(DB_NAME, "rb") as db_file:
+        st.sidebar.download_button(
+            label="📥 下載資料庫備份",
+            data=db_file.read(),
+            file_name=f"pengpeng_retirement_backup_{datetime.now().strftime('%Y%m%d_%H%M')}.db",
+            mime="application/octet-stream",
+            help="建議每次大量更新資料後下載一次，存到 Google Drive 或電腦備份資料夾。"
+        )
+except FileNotFoundError:
+    st.sidebar.warning("目前尚未建立資料庫，請先輸入資料。")
+
+st.sidebar.caption("備份檔可保存你的買入紀錄、配息紀錄、預估參數與配息行事曆。")
 
 # --- 側邊欄：後台輸入 ---
 st.sidebar.header("⚙️ 系統資料輸入後台")
@@ -555,7 +573,7 @@ else:
     st.download_button(
         label="📥 匯出 Excel 報表",
         data=make_excel_bytes(display_df, p, df_tx, df_div, df_est, calendar_display_df),
-        file_name=f"ETF資產報表_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+        file_name=f"鵬鵬退休計畫報表_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
