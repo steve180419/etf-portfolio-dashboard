@@ -376,9 +376,17 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 .phase1-kpi-card.gold{background:linear-gradient(135deg,#fffdf3,#fff4d9); border-color:#edd18d;}
 .phase1-kpi-card.purple{background:linear-gradient(135deg,#fffafd,#f5efff); border-color:#d7c8ec;}
 .phase1-kpi-card.peach{background:linear-gradient(135deg,#fffafa,#fff0e7); border-color:#e9c5b8;}
-.phase1-kpi-card img{width:74px; height:74px; object-fit:contain; flex:0 0 74px;}
-.phase1-kpi-card .label{font-weight:900; font-size:15px; margin-bottom:8px; color:#31552f; white-space:nowrap;}
-.phase1-kpi-card .value{font-weight:900; font-size:25px; color:#182033; line-height:1.05; white-space:nowrap;}
+.phase1-kpi-icon{
+    width:82px;
+    height:82px;
+    border-radius:14px;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:cover;
+    flex:0 0 82px;
+}
+.phase1-kpi-card .label{font-weight:900; font-size:16px; margin-bottom:8px; color:#31552f; white-space:nowrap;}
+.phase1-kpi-card .value{font-weight:900; font-size:27px; color:#182033; line-height:1.05; white-space:nowrap; letter-spacing:.2px;}
 .phase1-kpi-card .note{font-size:13px; color:#5f5a4b; margin-top:8px; white-space:nowrap;}
 .phase1-kpi-card .good{color:#137333 !important;}
 .phase1-kpi-card .bad{color:#b42318 !important;}
@@ -421,6 +429,14 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 .phase1-income .income-label{font-size:14px; color:#595443;}
 .phase1-income .income-value{font-size:21px; color:#182033; font-weight:900; margin-top:1px;}
 .phase1-water{position:absolute; right:0; bottom:0; width:245px; max-height:205px; object-fit:contain;}
+@media (max-width:1500px){
+  .phase1-kpi-grid{gap:12px;}
+  .phase1-kpi-card{grid-template-columns:72px minmax(0,1fr); padding:14px 16px; column-gap:14px;}
+  .phase1-kpi-icon{width:72px; height:72px;}
+  .phase1-kpi-card .value{font-size:24px;}
+  .phase1-kpi-card .label{font-size:14px;}
+  .phase1-kpi-card .note{font-size:12px;}
+}
 @media (max-width:1100px){
   .phase1-kpi-grid{grid-template-columns:repeat(2,1fr);}
   .phase1-main-grid{grid-template-columns:1fr;}
@@ -803,23 +819,23 @@ else:
     st.markdown(f"""
     <div class="phase1-kpi-grid">
       <div class="phase1-kpi-card green">
-        <img src="data:image/png;base64,{UI_ASSETS['flag']}" />
+        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['flag']})"></div>
         <div><div class="label">總投入本金</div><div class="value">${t_amt:,}</div><div class="note">含買入成本與手續費</div></div>
       </div>
       <div class="phase1-kpi-card blue">
-        <img src="data:image/png;base64,{UI_ASSETS['prince_planet']}" />
+        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['prince_planet']})"></div>
         <div><div class="label">總資產現值</div><div class="value">${t_val:,}</div><div class="note">Yahoo 即時報價估算</div></div>
       </div>
       <div class="phase1-kpi-card gold">
-        <img src="data:image/png;base64,{UI_ASSETS['treasure']}" />
+        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['treasure']})"></div>
         <div><div class="label">累積總配息</div><div class="value">${t_div:,}</div><div class="note">已領取配息</div></div>
       </div>
       <div class="phase1-kpi-card purple">
-        <img src="data:image/png;base64,{UI_ASSETS['rose']}" />
+        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['rose']})"></div>
         <div><div class="label">未實現損益</div><div class="value {unrealized_tone}">${t_unrealized:+,}</div><div class="note">目前帳面損益</div></div>
       </div>
       <div class="phase1-kpi-card peach">
-        <img src="data:image/png;base64,{UI_ASSETS['star']}" />
+        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['star']})"></div>
         <div><div class="label">總報酬率</div><div class="value {total_tone}">{total_return:+.2f}%</div><div class="note">含配息總報酬</div></div>
       </div>
     </div>
