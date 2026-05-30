@@ -6,7 +6,7 @@ from datetime import datetime
 from io import BytesIO
 
 # =====================================================
-# 鵬鵬的退休計畫系統 v10.2
+# 鵬鵬的退休計畫系統 v10.3
 # 重點：密碼保護、資料庫備份、KPI 整數顯示、配息行事曆、損益排行、Excel 匯出
 # =====================================================
 
@@ -58,7 +58,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休計畫系統 v10.2", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休計畫系統 v10.3", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -205,9 +205,9 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
     return output.getvalue()
 
 
-# --- 側邊欄：資料庫備份 ---
+# --- 側邊欄：資料庫備份 / 還原 ---
 st.sidebar.markdown("---")
-st.sidebar.subheader("🛡️ 資料備份")
+st.sidebar.subheader("🛡️ 資料備份 / 還原")
 
 try:
     with open(DB_NAME, "rb") as db_file:
@@ -222,6 +222,61 @@ except FileNotFoundError:
     st.sidebar.warning("目前尚未建立資料庫，請先輸入資料。")
 
 st.sidebar.caption("備份檔可保存你的買入紀錄、配息紀錄、預估參數與配息行事曆。")
+
+with st.sidebar.expander("📤 還原資料庫備份", expanded=False):
+    st.warning("還原會覆蓋目前雲端資料。建議先下載一次目前備份，再執行還原。")
+
+    uploaded_db = st.file_uploader(
+        "選擇 .db 備份檔",
+        type=["db"],
+        key="restore_db_file"
+    )
+
+    confirm_restore = st.checkbox(
+        "我確認要用上傳的備份覆蓋目前資料",
+        key="confirm_restore_db"
+    )
+
+    if st.button("📤 執行還原", key="restore_db_button"):
+        if uploaded_db is None:
+            st.error("請先選擇一個 .db 備份檔。")
+        elif not confirm_restore:
+            st.error("請先勾選確認覆蓋目前資料。")
+        else:
+            uploaded_bytes = uploaded_db.getvalue()
+            temp_restore_path = f"{DB_NAME}.restore_check"
+
+            try:
+                with open(temp_restore_path, "wb") as f:
+                    f.write(uploaded_bytes)
+
+                # 簡單驗證是否為可讀 SQLite 檔案，且至少包含系統主要資料表。
+                test_conn = sqlite3.connect(temp_restore_path)
+                table_names = pd.read_sql_query(
+                    "SELECT name FROM sqlite_master WHERE type='table'",
+                    test_conn
+                )["name"].tolist()
+                test_conn.close()
+
+                required_any_tables = {"tx_v74", "dividend_v74", "est_dividend_v90"}
+                if not required_any_tables.intersection(set(table_names)):
+                    st.error("這個檔案不像是本系統的備份資料庫，已取消還原。")
+                else:
+                    conn.close()
+                    with open(DB_NAME, "wb") as f:
+                        f.write(uploaded_bytes)
+                    st.success("資料庫已成功還原，系統即將重新整理。")
+                    st.rerun()
+
+            except Exception as e:
+                st.error(f"還原失敗：{e}")
+            finally:
+                try:
+                    import os
+                    if os.path.exists(temp_restore_path):
+                        os.remove(temp_restore_path)
+                except Exception:
+                    pass
 
 # --- 側邊欄：後台輸入 ---
 st.sidebar.header("⚙️ 系統資料輸入後台")
