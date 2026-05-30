@@ -55,6 +55,28 @@ c.execute('''
         note TEXT
     )
 ''')
+
+c.execute('''
+    CREATE TABLE IF NOT EXISTS sell_tx_v104 (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT,
+        symbol TEXT,
+        shares REAL,
+        sell_price REAL,
+        fee REAL,
+        tax REAL
+    )
+''')
+
+c.execute('''
+    CREATE TABLE IF NOT EXISTS cash_account_v104 (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT,
+        amount REAL,
+        note TEXT
+    )
+''')
+
 conn.commit()
 
 # 2. 網頁佈局設定
