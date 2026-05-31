@@ -758,7 +758,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.4｜退休目標角色放大修正版</div>
+  <div class="small">v14.5｜退休目標角色完整顯示修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1354,7 +1354,64 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
         border-color: #9ec880 !important;
         color: #235d26 !important;
     }
-    </style>
+    
+
+/* v14.5 退休目標進度角色圖最終修正：放大並避免被裁切 */
+.phase1-card:has(.phase1-fox),
+.phase1-card:has(.phase1-prince),
+.phase1-goal-card,
+.phase1-progress-card {
+    overflow: visible !important;
+    min-height: 300px !important;
+    padding-bottom: 48px !important;
+}
+
+.phase1-fox,
+.phase1-prince {
+    display: block !important;
+    position: absolute !important;
+    z-index: 12 !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+}
+
+.phase1-fox {
+    width: 112px !important;
+    left: 18px !important;
+    bottom: 18px !important;
+    transform: translateX(0) scale(1.02) !important;
+}
+
+.phase1-prince {
+    width: 98px !important;
+    right: 24px !important;
+    bottom: 16px !important;
+    transform: translateX(0) scale(1.02) !important;
+}
+
+.phase1-stage {
+    padding-left: 155px !important;
+    padding-right: 155px !important;
+}
+
+.phase1-stage:before {
+    left: 180px !important;
+    right: 180px !important;
+}
+
+.phase1-bar {
+    margin-left: 110px !important;
+    margin-right: 110px !important;
+}
+
+</style>
     """, unsafe_allow_html=True)
 
     _asset_btn_left, _asset_btn_mid, _asset_btn_right = st.columns([1, 1, 1])
