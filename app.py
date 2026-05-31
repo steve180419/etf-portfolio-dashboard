@@ -355,11 +355,11 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
     max-width:100% !important;
 }
 .hero-wrap{
-    min-height:154px !important;
+    min-height:246px !important;
     border-radius:0 0 28px 28px !important;
-    margin:0 0 16px 0 !important;
+    margin:-92px 0 16px 0 !important;
     background-size:cover !important;
-    background-position:center center !important;
+    background-position:center top !important;
     box-shadow:0 12px 26px rgba(31,44,63,.16);
 }
 .phase1-kpi-grid{
