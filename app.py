@@ -765,7 +765,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.7｜暖黃小王子Banner修正版</div>
+  <div class="small">v14.8｜角色放大與按鈕貼近修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1303,7 +1303,7 @@ else:
     planet_table_component_html = f"""
 <style>
 html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; }}
-.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 42px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
+.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 18px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
 .planet-table-wrap:after {{ content:'🌱'; position:absolute; right:14px; top:8px; font-size:28px; opacity:.75; }}
 .planet-table-title {{ color:#11233f; font-weight:900; font-size:20px; margin:0 0 8px 0; letter-spacing:.3px; }}
 .planet-asset-table {{ width:100%; border-collapse:separate; border-spacing:0; border:1px solid #d8cda7; border-radius:12px; overflow:hidden; background:rgba(255,253,244,.78); font-size:13px; box-shadow:inset 0 1px 0 rgba(255,255,255,.7); }}
@@ -1334,8 +1334,8 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
     st.markdown("""
     <style>
     div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) {
-        margin-top: -72px !important;
-        margin-bottom: 32px !important;
+        margin-top: -88px !important;
+        margin-bottom: 18px !important;
         position: relative !important;
         z-index: 20 !important;
     }
@@ -1478,6 +1478,89 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 .phase1-bar {
     margin-left: 118px !important;
     margin-right: 132px !important;
+}
+
+
+
+/* v14.8 退休目標進度角色圖與資產表按鈕修正 */
+.phase1-card,
+.phase1-panel,
+.phase1-goal,
+.phase1-goal-card,
+.phase1-progress,
+.phase1-progress-card,
+.phase1-card:has(.phase1-fox),
+.phase1-card:has(.phase1-prince) {
+    overflow: visible !important;
+}
+
+.phase1-card:has(.phase1-fox),
+.phase1-card:has(.phase1-prince) {
+    min-height: 320px !important;
+    padding-bottom: 56px !important;
+}
+
+.phase1-fox {
+    position: absolute !important;
+    left: 8px !important;
+    bottom: 8px !important;
+    width: 130px !important;
+    max-width: 130px !important;
+    max-height: none !important;
+    height: auto !important;
+    z-index: 20 !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+}
+
+.phase1-prince {
+    position: absolute !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    width: 120px !important;
+    max-width: 120px !important;
+    max-height: none !important;
+    height: auto !important;
+    z-index: 20 !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+}
+
+.phase1-stage {
+    padding-left: 158px !important;
+    padding-right: 158px !important;
+}
+
+.phase1-stage:before {
+    left: 188px !important;
+    right: 188px !important;
+}
+
+.phase1-bar {
+    margin-left: 132px !important;
+    margin-right: 132px !important;
+}
+
+/* 資產表查看全部按鈕更貼近表格 */
+.planet-table-wrap {
+    padding-bottom: 18px !important;
+}
+
+div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) {
+    margin-top: -88px !important;
+    margin-bottom: 18px !important;
+    position: relative !important;
+    z-index: 20 !important;
 }
 
 </style>
