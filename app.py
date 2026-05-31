@@ -515,9 +515,9 @@ st.markdown("""
 .sidebar-hero{margin:8px 8px 10px 8px;text-align:center;}
 .sidebar-hero img{width:86%;max-width:210px;border-radius:22px;filter:drop-shadow(0 10px 18px rgba(68,53,20,.16));}
 .sidebar-nav{margin:10px 4px 18px 4px;padding:10px;border-radius:20px;background:rgba(255,253,244,.68);border:1px solid #ead8ac;box-shadow:0 8px 22px rgba(71,57,30,.07);}
-.sidebar-nav .item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:4px 0;border-radius:14px;color:#24344b;font-weight:850;font-size:15px;}
+.sidebar-nav .item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:4px 0;border-radius:14px;color:#24344b;font-weight:850;font-size:15px;text-decoration:none !important;}
 .sidebar-nav .item.active{background:linear-gradient(90deg,#dfeec8,#f3f8e8);color:#17612d;box-shadow:inset 0 0 0 1px rgba(103,158,72,.12);}
-.sidebar-nav .item:hover{background:rgba(231,242,212,.9);}
+.sidebar-nav .item:hover{background:rgba(231,242,212,.9);text-decoration:none !important;}
 .sidebar-nav .ico{width:23px;text-align:center;font-size:18px;}
 .sidebar-quote{margin:16px 4px 18px 4px;padding:18px 16px;border-radius:20px;border:1px solid #e7d7ad;background:rgba(255,253,245,.82);box-shadow:0 8px 22px rgba(71,57,30,.08);color:#5d553e;text-align:center;font-size:14px;line-height:1.9;}
 .sidebar-quote .star{font-size:20px; color:#d99a25;}.sidebar-quote .sign{font-size:12px; margin-top:8px; color:#776b4f;}
@@ -672,21 +672,21 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v12.3｜側欄星球完整化版</div>
+  <div class="small">v12.4｜側欄可點擊導航版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['prince_planet']}" />
 </div>
 <div class="sidebar-nav">
-  <div class="item active"><span class="ico">🏡</span><span>退休星球總覽</span></div>
-  <div class="item"><span class="ico">📊</span><span>資產星圖</span></div>
-  <div class="item"><span class="ico">💰</span><span>配息寶箱</span></div>
-  <div class="item"><span class="ico">🗓️</span><span>配息行事曆</span></div>
-  <div class="item"><span class="ico">🎯</span><span>退休任務中心</span></div>
-  <div class="item"><span class="ico">📈</span><span>損益排行榜</span></div>
-  <div class="item"><span class="ico">🧾</span><span>交易明細管理</span></div>
-  <div class="item"><span class="ico">⚙️</span><span>系統設定</span></div>
-  <div class="item"><span class="ico">🔄</span><span>備份 / 還原</span></div>
+  <a class="item active" href="#retirement-overview"><span class="ico">🏡</span><span>退休星球總覽</span></a>
+  <a class="item" href="#asset-map"><span class="ico">📊</span><span>資產星圖</span></a>
+  <a class="item" href="#dividend-box"><span class="ico">💰</span><span>配息寶箱</span></a>
+  <a class="item" href="#dividend-calendar"><span class="ico">🗓️</span><span>配息行事曆</span></a>
+  <a class="item" href="#retirement-task"><span class="ico">🎯</span><span>退休任務中心</span></a>
+  <a class="item" href="#profit-ranking"><span class="ico">📈</span><span>損益排行榜</span></a>
+  <a class="item" href="#trade-manager"><span class="ico">🧾</span><span>交易明細管理</span></a>
+  <a class="item" href="#system-input"><span class="ico">⚙️</span><span>系統設定</span></a>
+  <a class="item" href="#backup-restore"><span class="ico">🔄</span><span>備份 / 還原</span></a>
 </div>
 <div class="sidebar-quote">
   <div class="star">✦</div>
@@ -695,6 +695,7 @@ st.sidebar.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+st.sidebar.markdown("<span id=\"backup-restore\"></span>", unsafe_allow_html=True)
 st.sidebar.markdown("---")
 st.sidebar.subheader("🛡️ 資料備份 / 還原")
 
@@ -776,6 +777,7 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 側邊欄：後台輸入 ---
+st.sidebar.markdown("<span id=\"system-input\"></span>", unsafe_allow_html=True)
 st.sidebar.header("⚙️ 系統資料輸入後台")
 if st.sidebar.button("🚪 登出"):
     st.session_state["authenticated"] = False
@@ -956,6 +958,7 @@ else:
     t_unrealized = round(p['未實現損益'].sum())
     total_return = 0 if t_amt == 0 else ((t_val + t_div - t_amt) / t_amt) * 100
 
+    st.markdown("<span id=\"retirement-overview\"></span>", unsafe_allow_html=True)
     # 版面重構：上方 5 張核心 KPI 卡片（修正版：整段 HTML 一次輸出，避免被 Streamlit 切版）
     target_asset_phase1 = 30000000
     progress_phase1 = min(t_val / target_asset_phase1, 1.0) if target_asset_phase1 else 0
@@ -1019,6 +1022,7 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("<span id=\"asset-map\"></span>", unsafe_allow_html=True)
     st.markdown("### 🌌 退休星球總覽")
 
     # v12.2：首頁下方四張儀表小卡（純 HTML 版，避免圖表跑出卡片）
@@ -1131,14 +1135,14 @@ else:
         </div>
       </div>
       <div class='planet-html-card'>
-        <h4>🏆 損益排行榜</h4>
+        <span id="profit-ranking"></span><h4>🏆 損益排行榜</h4>
         <div class='planet-card-body'>
           <div>{rank_rows}</div>
           <div class='planet-today-quote'>綠色代表目前帳面獲利；紅色代表暫時套牢。</div>
         </div>
       </div>
       <div class='planet-html-card'>
-        <h4>📅 近期配息行事曆</h4>
+        <span id="dividend-calendar"></span><h4>📅 近期配息行事曆</h4>
         <div class='planet-card-body'>
           <div>{cal_rows}</div>
           <div class='planet-today-quote'>🌳 今日小語<br>耐心澆灌，財富之樹終會長成森林。</div>
@@ -1203,6 +1207,7 @@ else:
 
     # 未來配息行事曆：依已輸入公告 + 持股股數自動估算
     st.markdown("---")
+    st.markdown("<span id=\"dividend-box\"></span><span id=\"retirement-task\"></span>", unsafe_allow_html=True)
     st.markdown("### 📅 未來配息行事曆")
 
     calendar_display_df = pd.DataFrame()
@@ -1281,6 +1286,7 @@ else:
 
     # --- 下方明細分頁 ---
     st.markdown("---")
+    st.markdown("<span id=\"trade-manager\"></span>", unsafe_allow_html=True)
     tab1, tab2, tab3, tab4 = st.tabs(["📦 庫存買入明細管理", "💰 已收配息明細管理", "🔮 預估配息參數體檢", "📅 配息公告管理"])
 
     with tab1:
