@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.2｜資產明細表渲染修正版</div>
+  <div class="small">v13.3｜資產明細表高度修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1290,7 +1290,7 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
   {asset_table_html}
 </div>
 """
-    components.html(planet_table_component_html, height=260, scrolling=False)
+    components.html(planet_table_component_html, height=345, scrolling=False)
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
