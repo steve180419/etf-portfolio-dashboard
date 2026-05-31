@@ -696,13 +696,32 @@ section[data-testid="stSidebar"] .sidebar-hero img{
   image-rendering:auto !important;
 }
 section[data-testid="stSidebar"] .sidebar-planet-title{padding-bottom:4px !important;}
+
+/* v12.9: tighten sidebar hero and navigation spacing so artwork touches the menu card more closely. */
+section[data-testid="stSidebar"] .sidebar-hero{
+  height:205px !important;
+  margin:0 6px -2px 6px !important;
+  padding:0 !important;
+}
+section[data-testid="stSidebar"] .sidebar-hero img{
+  width:268px !important;
+  margin:0 auto !important;
+}
+section[data-testid="stSidebar"] .sidebar-nav{
+  margin-top:0 !important;
+  margin-bottom:16px !important;
+}
+section[data-testid="stSidebar"] .sidebar-planet-title{
+  padding-bottom:0 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v12.8｜側欄底色融合修正版</div>
+  <div class="small">v12.9｜側欄圖案密合修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
