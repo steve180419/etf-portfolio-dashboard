@@ -664,9 +664,9 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 
 st.markdown("""
 <style>
-/* v12.6: use final reference image crop for sidebar hero; no generated/low-res replacement. */
+/* v12.7: transparent cutout final sidebar art, removes pasted-on rectangle feeling. */
 section[data-testid="stSidebar"] .sidebar-hero{
-  height:235px !important;
+  height:250px !important;
   margin:2px 6px 16px 6px !important;
   background:transparent !important;
   overflow:visible !important;
@@ -681,7 +681,7 @@ section[data-testid="stSidebar"] .sidebar-hero img{
   left:auto !important;
   bottom:auto !important;
   transform:none !important;
-  width:245px !important;
+  width:268px !important;
   max-width:100% !important;
   display:block !important;
   margin:0 auto !important;
@@ -695,7 +695,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{padding-bottom:4px !impor
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v12.6｜側欄最終圖案修正版</div>
+  <div class="small">v12.7｜側欄融入背景修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
