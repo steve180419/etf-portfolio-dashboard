@@ -560,7 +560,7 @@ st.markdown("""
 .planet-asset-table .star-cell{color:#c8932b;font-size:15px;}
 .planet-asset-table .gain{color:#14783b;font-weight:950;}
 .planet-asset-table .loss{color:#c51f2f;font-weight:950;}
-.planet-asset-table-btn{display:block;width:max-content;margin:8px auto 0 auto;padding:6px 18px;border-radius:999px;background:linear-gradient(180deg,#eef7dc,#dcefc7);border:1px solid #bfd7a6;color:#2f6b30;font-size:13px;font-weight:900;text-align:center;box-shadow:0 3px 8px rgba(71,57,30,.08);}
+.planet-asset-table-btn-row{display:flex;justify-content:center;align-items:center;margin:8px 0 0 0;}.planet-asset-table-btn{display:inline-flex;align-items:center;justify-content:center;min-width:128px;height:32px;padding:0 16px;border-radius:14px;background:linear-gradient(180deg,#edf7dc 0%,#d9efc5 100%);border:1px solid #b9d89e;color:#2f6b30!important;font-size:13px;font-weight:900;text-align:center;text-decoration:none;box-shadow:0 2px 6px rgba(71,57,30,.07),inset 0 1px 0 rgba(255,255,255,.85);}.planet-asset-table-btn:hover{background:linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%);border-color:#9ec880;color:#235d26!important;text-decoration:none;}
 @media(max-width:900px){.planet-asset-table{font-size:12px}.planet-asset-table th,.planet-asset-table td{padding:6px 5px}}
 div[data-testid="stDataFrame"]{border:1px solid #e5d9b9 !important;background:#fffdf5 !important;border-radius:18px !important;box-shadow:0 6px 16px rgba(71,57,30,.07) !important;}
 .phase1-bar{height:22px !important; background:#edf0d9 !important; box-shadow:inset 0 2px 5px rgba(85,75,35,.12);}.phase1-bar-fill{background:linear-gradient(90deg,#69aa50,#9dcc68,#f0c05a) !important;}.phase1-stage-item b{color:#355d2e;}
@@ -1234,10 +1234,16 @@ else:
     v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
-    if 'show_all_assets' not in st.session_state:
-        st.session_state.show_all_assets = False
+    # v13.6：用網址參數控制資產表展開/收合，讓按鈕可以直接嵌在表格卡片內，視覺更接近最終版
+    try:
+        asset_view = st.query_params.get('asset_view', 'brief')
+    except Exception:
+        asset_view = 'brief'
+    if isinstance(asset_view, list):
+        asset_view = asset_view[0] if asset_view else 'brief'
+    asset_expanded = str(asset_view).lower() == 'all'
 
-    asset_limit = len(v) if st.session_state.show_all_assets else 5
+    asset_limit = len(v) if asset_expanded else 5
     asset_rows = []
     for _, r in v.head(asset_limit).iterrows():
         pnl_cls = 'gain' if float(r.get('未實現損益', 0) or 0) >= 0 else 'loss'
@@ -1272,6 +1278,9 @@ else:
         </table>
         """
 
+    toggle_label = '收合資產清單　⌃' if asset_expanded else '查看全部資產　⌄'
+    toggle_href = '?asset_view=brief' if asset_expanded else '?asset_view=all'
+
     planet_table_component_html = f"""
 <style>
 html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; }}
@@ -1286,60 +1295,19 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 .planet-asset-table .star-cell {{ color:#c8932b; font-size:15px; }}
 .planet-asset-table .gain {{ color:#14783b; font-weight:950; }}
 .planet-asset-table .loss {{ color:#c51f2f; font-weight:950; }}
-.planet-asset-table-btn {{ display:block; width:max-content; margin:8px auto 0 auto; padding:6px 18px; border-radius:999px; background:linear-gradient(180deg,#eef7dc,#dcefc7); border:1px solid #bfd7a6; color:#2f6b30; font-size:13px; font-weight:900; text-align:center; box-shadow:0 3px 8px rgba(71,57,30,.08); }}
+.planet-asset-table-btn-row {{ display:flex; justify-content:center; align-items:center; margin:8px 0 0 0; }} .planet-asset-table-btn {{ display:inline-flex; align-items:center; justify-content:center; min-width:128px; height:32px; padding:0 16px; border-radius:14px; background:linear-gradient(180deg,#edf7dc 0%,#d9efc5 100%); border:1px solid #b9d89e; color:#2f6b30!important; font-size:13px; font-weight:900; text-align:center; text-decoration:none; box-shadow:0 2px 6px rgba(71,57,30,.07), inset 0 1px 0 rgba(255,255,255,.85); }} .planet-asset-table-btn:hover {{ background:linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%); border-color:#9ec880; color:#235d26!important; text-decoration:none; }}
 </style>
 <div class='planet-table-wrap'>
   <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
   {asset_table_html}
+  <div class='planet-asset-table-btn-row'>
+    <a class='planet-asset-table-btn' href='{toggle_href}' target='_parent'>{toggle_label}</a>
+  </div>
 </div>
 """
     shown_asset_rows = min(asset_limit, len(v))
-    table_component_height = max(292, 118 + shown_asset_rows * 42)
+    table_component_height = max(340, 150 + shown_asset_rows * 42)
     components.html(planet_table_component_html, height=table_component_height, scrolling=False)
-
-    # v13.5：讓「查看全部資產」按鈕貼近資產卡片，並改回最終版綠色膠囊樣式
-    st.markdown('''
-    <style>
-    /* 只針對資產表後方這一排按鈕做視覺修正：上移、縮短寬度、綠色膠囊 */
-    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) {
-        margin-top: -34px !important;
-        margin-bottom: 8px !important;
-        position: relative !important;
-        z-index: 10 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) .stButton > button {
-        width: auto !important;
-        min-width: 150px !important;
-        max-width: 190px !important;
-        margin: 0 auto !important;
-        display: block !important;
-        padding: 7px 22px !important;
-        border-radius: 999px !important;
-        background: linear-gradient(180deg,#eef8df 0%,#d9efc5 100%) !important;
-        border: 1px solid #b9d89e !important;
-        color: #2f6b30 !important;
-        font-size: 14px !important;
-        font-weight: 900 !important;
-        box-shadow: 0 5px 12px rgba(71,57,30,.10), inset 0 1px 0 rgba(255,255,255,.85) !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) .stButton > button:hover {
-        background: linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%) !important;
-        border-color: #9ec880 !important;
-        color: #235d26 !important;
-    }
-    </style>
-    ''', unsafe_allow_html=True)
-    btn_col_l, btn_col_m, btn_col_r = st.columns([1, 1, 1])
-    with btn_col_m:
-        st.markdown('<span id="asset-toggle-marker"></span>', unsafe_allow_html=True)
-        if st.session_state.show_all_assets:
-            if st.button('收合資產清單　⌃', key='toggle_all_assets', use_container_width=True):
-                st.session_state.show_all_assets = False
-                st.rerun()
-        else:
-            if st.button('查看全部資產　⌄', key='toggle_all_assets', use_container_width=True):
-                st.session_state.show_all_assets = True
-                st.rerun()
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
