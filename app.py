@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.9｜資產表按鈕連結修正版</div>
+  <div class="small">v14.0｜資產表展開連結修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1313,9 +1313,11 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
   </div>
 </div>
 """
-    shown_asset_rows = min(asset_limit, len(v))
-    table_component_height = max(220, 150 + shown_asset_rows * 44)
-    components.html(planet_table_component_html, height=table_component_height, scrolling=False)
+    # v14.0：改用 st.markdown 直接渲染資產表 HTML。
+    # 原本 components.html 會放進 iframe，裡面的 <a target="_parent"> 在 Streamlit Cloud 容易失效，
+    # 導致「查看全部資產」看起來能點、但頁面參數沒有改變。
+    # 直接渲染在主頁面後，href 才會真正更新 ?asset_table=all / top。
+    st.markdown(planet_table_component_html, unsafe_allow_html=True)
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
