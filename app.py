@@ -505,7 +505,7 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 
 
 
-# --- v10.7：終極版首頁美化補強（側欄、卡片、表格、儀表小卡） ---
+# --- v12.2：首頁儀表板版面修正（純 HTML 卡片，避免 Streamlit 圖表被擠出卡片） ---
 st.markdown("""
 <style>
 [data-testid="stSidebar"]{background:linear-gradient(180deg,#fff6dc 0%,#fbefd0 100%) !important;border-right:1px solid #e8d7ad !important;box-shadow:8px 0 24px rgba(71,57,30,.08);}
@@ -517,6 +517,26 @@ st.markdown("""
 [data-testid="stSidebar"] .stSelectbox, [data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput, [data-testid="stSidebar"] .stDateInput,[data-testid="stSidebar"] .stRadio{background:rgba(255,255,255,.36);border-radius:16px;padding:4px 8px 8px 8px;}
 [data-testid="stSidebar"] .stButton>button,[data-testid="stSidebar"] .stDownloadButton>button{width:100%;border-radius:16px !important;background:linear-gradient(180deg,#f9f4d5,#e7eec4) !important;border:1px solid #d8c88d !important;color:#315b33 !important;box-shadow:0 4px 10px rgba(71,57,30,.10);}
 .planet-section-title{display:flex; align-items:center; gap:10px;font-size:20px; font-weight:900; color:#25364e;margin:18px 0 10px 0;}
+.planet-dashboard-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:10px 0 22px 0;}
+.planet-html-card{position:relative;height:355px;padding:18px 18px 14px 18px;border-radius:22px;border:1px solid #e4d8bb;background:linear-gradient(180deg,rgba(255,253,245,.97),rgba(248,241,216,.93));box-shadow:0 8px 24px rgba(71,57,30,.10);overflow:hidden;}
+.planet-html-card:after{content:"✦";position:absolute;right:18px;top:14px;color:#dca928;opacity:.55;font-size:20px;}
+.planet-html-card h4{margin:0 0 12px 0;color:#203047;font-size:18px;font-weight:900;}
+.planet-card-body{height:295px;display:flex;flex-direction:column;justify-content:space-between;}
+.planet-donut-wrap{display:flex;align-items:center;gap:16px;margin:6px 0 12px 0;}
+.planet-donut{width:132px;height:132px;border-radius:50%;background:conic-gradient(#62a852 0 80%,#3d98c8 80% 92%,#f0b33d 92% 98%,#8e73bd 98% 100%);position:relative;box-shadow:inset 0 2px 8px rgba(0,0,0,.08);}
+.planet-donut:after{content:"";position:absolute;inset:28px;border-radius:50%;background:#fffdf5;box-shadow:0 0 0 1px rgba(222,210,174,.8);}
+.planet-legend{flex:1;font-size:13px;line-height:1.65;}
+.planet-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;}
+.planet-svg-box{height:148px;display:flex;align-items:center;justify-content:center;margin-top:4px;}
+.planet-score-line{display:grid;grid-template-columns:70px 1fr 34px;gap:8px;align-items:center;margin:9px 0;font-size:13px;}
+.planet-score-track{height:10px;background:#eee5c9;border-radius:999px;overflow:hidden;}
+.planet-score-track span{display:block;height:100%;background:linear-gradient(90deg,#70aa55,#a9ce74);border-radius:999px;}
+.planet-rank-row{display:grid;grid-template-columns:32px 1fr auto;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(147,132,93,.28);font-size:14px;}
+.planet-rank-row:last-child{border-bottom:none;}
+.planet-cal-empty{margin-top:70px;color:#8a8067;text-align:center;line-height:1.8;}
+.planet-today-quote{margin-top:auto;padding:13px;border-radius:18px;border:1px solid #e6d7af;background:rgba(255,255,255,.55);text-align:center;color:#625a43;line-height:1.6;font-size:13px;}
+@media(max-width:1400px){.planet-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.planet-html-card{height:340px;}}
+@media(max-width:900px){.planet-dashboard-grid{grid-template-columns:1fr;}.planet-html-card{height:auto;min-height:320px;}}
 .planet-soft-card{position:relative;min-height:250px;padding:18px 18px 16px 18px;border-radius:22px;border:1px solid #e4d8bb;background:linear-gradient(180deg,rgba(255,253,245,.96),rgba(248,241,216,.92));box-shadow:0 8px 24px rgba(71,57,30,.10);overflow:hidden;}
 .planet-soft-card:after{content:"✦";position:absolute; right:18px; top:14px;color:#dca928; opacity:.55; font-size:20px;}
 .planet-soft-card h4{margin:0 0 12px 0; color:#203047; font-size:17px; font-weight:900;}
@@ -643,7 +663,7 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v10.7｜退休星球進化版</div>
+  <div class="small">v12.2｜退休星球版面修正版</div>
 </div>
 <div class="sidebar-quote">
   <div class="star">✦</div>
@@ -970,80 +990,132 @@ else:
 
     st.markdown("### 🌌 退休星球總覽")
 
-    # v10.7：首頁下方四張儀表小卡（往目標圖靠近）
+    # v12.2：首頁下方四張儀表小卡（純 HTML 版，避免圖表跑出卡片）
     st.markdown('<div class="planet-section-title">🪐 星球儀表小卡</div>', unsafe_allow_html=True)
 
-    dash1, dash2, dash3, dash4 = st.columns([1.15, 1.05, 1.05, 1.15])
+    import html as _html
+
+    def _esc(x):
+        return _html.escape(str(x))
 
     def classify_asset_symbol(sym):
         s = str(sym).upper()
         if s.endswith('B.TW') or s.endswith('B') or 'BOND' in s:
             return '債券型ETF'
-        if s.startswith('00') or s.endswith('.TW'):
-            return '高股息ETF'
         if any(k in s for k in ['GLD', 'GOLD', 'IAU']):
             return '黃金/商品'
+        if s.startswith('00') or s.endswith('.TW'):
+            return '高股息ETF'
         return '其他'
 
-    alloc_df = p[['symbol', '目前現值']].copy()
-    alloc_df['分類'] = alloc_df['symbol'].map(classify_asset_symbol)
-    cat_df = alloc_df.groupby('分類', as_index=False)['目前現值'].sum().sort_values('目前現值', ascending=False)
-    total_alloc = cat_df['目前現值'].sum() if not cat_df.empty else 0
+    alloc_df = p[['symbol', '目前現值']].copy() if not p.empty else pd.DataFrame(columns=['symbol', '目前現值'])
+    alloc_df['分類'] = alloc_df['symbol'].map(classify_asset_symbol) if not alloc_df.empty else []
+    cat_df = alloc_df.groupby('分類', as_index=False)['目前現值'].sum().sort_values('目前現值', ascending=False) if not alloc_df.empty else pd.DataFrame(columns=['分類', '目前現值'])
+    total_alloc = float(cat_df['目前現值'].sum()) if not cat_df.empty else 0.0
 
-    with dash1:
-        st.markdown('<div class="planet-soft-card"><h4>🌿 資產配置</h4>', unsafe_allow_html=True)
-        if total_alloc <= 0:
-            st.caption('目前沒有可分析的資產配置。')
+    palette = ['#62a852', '#3d98c8', '#f0b33d', '#8e73bd', '#9a9a9a']
+    donut_segments = []
+    legend_rows = []
+    cursor = 0.0
+    if total_alloc > 0:
+        for i, (_, r) in enumerate(cat_df.head(5).iterrows()):
+            pct = float(r['目前現值']) / total_alloc * 100
+            color = palette[i % len(palette)]
+            donut_segments.append(f"{color} {cursor:.2f}% {min(cursor+pct,100):.2f}%")
+            cursor += pct
+            legend_rows.append(f"<div class='planet-mini-row'><span><i class='planet-dot' style='background:{color}'></i>{_esc(r['分類'])}</span><b>{pct:.1f}%</b></div>")
+    donut_style = ','.join(donut_segments) if donut_segments else '#e7dfc4 0 100%'
+
+    score_yield = min(max(float(p['預估年化現金殖利率 (%)'].mean()) if not p.empty else 0, 0), 12) / 12 * 100
+    score_profit = min(max(float(total_return), 0), 50) / 50 * 100
+    score_div = min((float(t_div) / max(float(t_amt), 1)) * 100, 20) / 20 * 100
+    score_conc = 100 - min((float(p['目前現值'].max()) / max(float(t_val), 1)) * 100 if not p.empty else 0, 100)
+    scores = [('現金流', score_yield), ('報酬率', score_profit), ('配息累積', score_div), ('分散度', score_conc)]
+    score_rows = ''.join([f"<div class='planet-score-line'><span>{name}</span><div class='planet-score-track'><span style='width:{max(4,score):.1f}%'></span></div><b>{score:.0f}</b></div>" for name, score in scores])
+
+    # 簡易雷達圖 SVG
+    cx, cy, rmax = 96, 78, 58
+    angles = [-90, 0, 90, 180]
+    import math as _math
+    pts = []
+    for (_, score), ang in zip(scores, angles):
+        rr = rmax * max(0, min(score, 100)) / 100
+        rad = _math.radians(ang)
+        pts.append((cx + rr * _math.cos(rad), cy + rr * _math.sin(rad)))
+    radar_points = ' '.join([f"{x:.1f},{y:.1f}" for x, y in pts])
+    radar_svg = f"""
+    <svg width='210' height='150' viewBox='0 0 210 150' aria-label='asset radar'>
+      <polygon points='96,20 154,78 96,136 38,78' fill='none' stroke='#ded3ad' stroke-width='1.5'/>
+      <polygon points='96,49 125,78 96,107 67,78' fill='none' stroke='#ebe2c4' stroke-width='1'/>
+      <line x1='96' y1='20' x2='96' y2='136' stroke='#e3d7b7'/><line x1='38' y1='78' x2='154' y2='78' stroke='#e3d7b7'/>
+      <polygon points='{radar_points}' fill='rgba(91,166,124,.38)' stroke='#36885e' stroke-width='2'/>
+      <circle cx='96' cy='20' r='3' fill='#77aa55'/><circle cx='154' cy='78' r='3' fill='#77aa55'/><circle cx='96' cy='136' r='3' fill='#77aa55'/><circle cx='38' cy='78' r='3' fill='#77aa55'/>
+    </svg>
+    """
+
+    rank_rows = ''
+    rank_df = p.sort_values(by='未實現損益', ascending=False)[['symbol', '未實現損益']].head(5).copy() if not p.empty else pd.DataFrame(columns=['symbol', '未實現損益'])
+    if rank_df.empty:
+        rank_rows = "<div class='planet-cal-empty'>目前沒有損益資料。</div>"
+    else:
+        medals = ['🥇','🥈','🥉','4','5']
+        for i, (_, r) in enumerate(rank_df.iterrows()):
+            cls = 'planet-rank-good' if r['未實現損益'] >= 0 else 'planet-rank-bad'
+            rank_rows += f"<div class='planet-rank-row'><span>{medals[i]}</span><b>{_esc(r['symbol'])}</b><span class='{cls}'>${r['未實現損益']:+,.0f}</span></div>"
+
+    cal_rows = ''
+    if df_cal.empty:
+        cal_rows = "<div class='planet-cal-empty'>目前還沒有未來配息公告。<br><span class='planet-pill'>到左側新增配息公告</span></div>"
+    else:
+        cal_preview = df_cal.copy()
+        cal_preview['payment_date'] = pd.to_datetime(cal_preview['payment_date'], errors='coerce')
+        cal_preview = pd.merge(cal_preview, p[['symbol','總股數']], on='symbol', how='left') if not p.empty else cal_preview.assign(總股數=0)
+        cal_preview['總股數'] = cal_preview['總股數'].fillna(0)
+        cal_preview['預估入帳'] = cal_preview['總股數'] * cal_preview['dividend_per_share']
+        cal_preview = cal_preview[cal_preview['payment_date'].notna()].sort_values('payment_date').head(4)
+        if cal_preview.empty:
+            cal_rows = "<div class='planet-cal-empty'>目前沒有可顯示的發放日。</div>"
         else:
-            st.bar_chart(cat_df.set_index('分類'), use_container_width=True, height=150)
-            for _, r in cat_df.iterrows():
-                pct = 0 if total_alloc == 0 else r['目前現值'] / total_alloc * 100
-                st.markdown(f'<div class="planet-mini-row"><span>{r["分類"]}</span><b>{pct:.1f}%</b></div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            for _, r in cal_preview.iterrows():
+                d = r['payment_date'].strftime('%m/%d')
+                cal_rows += f"<div class='planet-mini-row'><span>{d}&nbsp; {_esc(r['symbol'])}</span><b>${r['預估入帳']:,.0f}</b></div>"
 
-    with dash2:
-        st.markdown('<div class="planet-soft-card"><h4>🚀 資產配置星圖</h4>', unsafe_allow_html=True)
-        score_yield = min(max(p['預估年化現金殖利率 (%)'].mean() if not p.empty else 0, 0), 12) / 12 * 100
-        score_profit = min(max(total_return, 0), 50) / 50 * 100
-        score_div = min((t_div / max(t_amt, 1)) * 100, 20) / 20 * 100
-        score_conc = 100 - min((p['目前現值'].max() / max(t_val, 1)) * 100 if not p.empty else 0, 100)
-        for name, score in [('現金流', score_yield), ('報酬率', score_profit), ('配息累積', score_div), ('分散度', score_conc)]:
-            st.markdown(f'<div class="planet-mini-row"><span>{name}</span><b>{score:.0f}</b></div><div class="planet-score-bar"><div class="planet-score-fill" style="width:{max(3, score):.1f}%"></div></div>', unsafe_allow_html=True)
-        st.caption('先用分數條模擬雷達圖；下一版可升級成真正雷達圖。')
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with dash3:
-        st.markdown('<div class="planet-soft-card"><h4>🏆 損益排行榜</h4>', unsafe_allow_html=True)
-        rank_df = p.sort_values(by='未實現損益', ascending=False)[['symbol', '未實現損益']].head(5).copy()
-        if rank_df.empty:
-            st.caption('目前沒有損益資料。')
-        else:
-            medals = ['🥇','🥈','🥉','4','5']
-            for i, (_, r) in enumerate(rank_df.iterrows()):
-                cls = 'planet-rank-good' if r['未實現損益'] >= 0 else 'planet-rank-bad'
-                st.markdown(f'<div class="planet-mini-row"><span>{medals[i]}&nbsp; {r["symbol"]}</span><span class="{cls}">${r["未實現損益"]:+,.0f}</span></div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with dash4:
-        st.markdown('<div class="planet-soft-card"><h4>📅 近期配息行事曆</h4>', unsafe_allow_html=True)
-        if df_cal.empty:
-            st.caption('目前還沒有未來配息公告。')
-            st.markdown('<span class="planet-pill">到左側新增配息公告</span>', unsafe_allow_html=True)
-        else:
-            cal_preview = df_cal.copy()
-            cal_preview['payment_date'] = pd.to_datetime(cal_preview['payment_date'], errors='coerce')
-            cal_preview = pd.merge(cal_preview, p[['symbol','總股數']], on='symbol', how='left')
-            cal_preview['總股數'] = cal_preview['總股數'].fillna(0)
-            cal_preview['預估入帳'] = cal_preview['總股數'] * cal_preview['dividend_per_share']
-            cal_preview = cal_preview[cal_preview['payment_date'].notna()].sort_values('payment_date').head(4)
-            if cal_preview.empty:
-                st.caption('目前沒有可顯示的發放日。')
-            else:
-                for _, r in cal_preview.iterrows():
-                    d = r['payment_date'].strftime('%m/%d')
-                    st.markdown(f'<div class="planet-mini-row"><span>{d}&nbsp; {r["symbol"]}</span><b>${r["預估入帳"]:,.0f}</b></div>', unsafe_allow_html=True)
-        st.markdown('<div class="sidebar-quote" style="margin-top:14px;padding:12px;line-height:1.6;">🌳 今日小語<br>耐心澆灌，財富之樹終會長成森林。</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+    dashboard_html = f"""
+    <div class='planet-dashboard-grid'>
+      <div class='planet-html-card'>
+        <h4>🌿 資產配置</h4>
+        <div class='planet-card-body'>
+          <div class='planet-donut-wrap'>
+            <div class='planet-donut' style='background:conic-gradient({donut_style});'></div>
+            <div class='planet-legend'>{''.join(legend_rows) if legend_rows else '<span style="color:#8a8067">目前沒有可分析的資產配置。</span>'}</div>
+          </div>
+          <div class='planet-today-quote'>核心重點：先看分類比例，再看現金流穩定度。</div>
+        </div>
+      </div>
+      <div class='planet-html-card'>
+        <h4>🚀 資產配置星圖</h4>
+        <div class='planet-card-body'>
+          <div class='planet-svg-box'>{radar_svg}</div>
+          <div>{score_rows}</div>
+        </div>
+      </div>
+      <div class='planet-html-card'>
+        <h4>🏆 損益排行榜</h4>
+        <div class='planet-card-body'>
+          <div>{rank_rows}</div>
+          <div class='planet-today-quote'>綠色代表目前帳面獲利；紅色代表暫時套牢。</div>
+        </div>
+      </div>
+      <div class='planet-html-card'>
+        <h4>📅 近期配息行事曆</h4>
+        <div class='planet-card-body'>
+          <div>{cal_rows}</div>
+          <div class='planet-today-quote'>🌳 今日小語<br>耐心澆灌，財富之樹終會長成森林。</div>
+        </div>
+      </div>
+    </div>
+    """
+    st.markdown(dashboard_html, unsafe_allow_html=True)
 
     st.markdown('---')
     st.markdown('### 📋 綜合資產明細表（核心現金流前置）')
