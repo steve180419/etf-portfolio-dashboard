@@ -367,16 +367,20 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 }
 .hero-live-info{
     position:absolute;
-    left:10.5%;
-    bottom:12px;
+    left:7.4%;
+    bottom:20px;
     display:flex;
     align-items:center;
-    gap:14px;
-    padding:9px 16px;
-    border-radius:14px;
-    background:rgba(47,91,142,.96);
+    justify-content:space-between;
+    gap:18px;
+    width:430px;
+    min-height:46px;
+    box-sizing:border-box;
+    padding:10px 16px;
+    border-radius:15px;
+    background:#315f99;
     color:#fff;
-    font-size:15px;
+    font-size:14px;
     font-weight:800;
     letter-spacing:.2px;
     box-shadow:0 5px 14px rgba(8,30,63,.20);
