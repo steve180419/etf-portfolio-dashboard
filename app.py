@@ -11,7 +11,7 @@ UI_ASSETS["sidebar_prince_final"] = "iVBORw0KGgoAAAANSUhEUgAAANwAAAC0CAYAAAD//UK
 
 
 # =====================================================
-# 鵬鵬的退休星球 v13.2
+# 鵬鵬的退休星球 v13.4
 # 重點：第一階段版面重構、星球首頁、KPI 卡片、退休進度區
 # =====================================================
 
@@ -85,7 +85,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休星球 v13.2", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休星球 v13.4", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.3｜資產明細表高度修正版</div>
+  <div class="small">v13.4｜資產明細表展開修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1234,8 +1234,12 @@ else:
     v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
+    if 'show_all_assets' not in st.session_state:
+        st.session_state.show_all_assets = False
+
+    asset_limit = len(v) if st.session_state.show_all_assets else 5
     asset_rows = []
-    for _, r in v.head(5).iterrows():
+    for _, r in v.head(asset_limit).iterrows():
         pnl_cls = 'gain' if float(r.get('未實現損益', 0) or 0) >= 0 else 'loss'
         ret_cls = 'gain' if float(r.get('總報酬率 (%)', 0) or 0) >= 0 else 'loss'
         asset_rows.append(f"""
@@ -1266,7 +1270,6 @@ else:
           </thead>
           <tbody>{''.join(asset_rows)}</tbody>
         </table>
-        <div class='planet-asset-table-btn'>查看全部資產　⌄</div>
         """
 
     planet_table_component_html = f"""
@@ -1290,7 +1293,20 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
   {asset_table_html}
 </div>
 """
-    components.html(planet_table_component_html, height=345, scrolling=False)
+    shown_asset_rows = min(asset_limit, len(v))
+    table_component_height = max(315, 165 + shown_asset_rows * 42)
+    components.html(planet_table_component_html, height=table_component_height, scrolling=False)
+
+    btn_col_l, btn_col_m, btn_col_r = st.columns([1, 1, 1])
+    with btn_col_m:
+        if st.session_state.show_all_assets:
+            if st.button('收合資產清單　⌃', key='toggle_all_assets', use_container_width=True):
+                st.session_state.show_all_assets = False
+                st.rerun()
+        else:
+            if st.button('查看全部資產　⌄', key='toggle_all_assets', use_container_width=True):
+                st.session_state.show_all_assets = True
+                st.rerun()
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
