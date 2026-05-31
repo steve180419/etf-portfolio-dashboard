@@ -547,7 +547,20 @@ st.markdown("""
 .planet-pill{display:inline-block; padding:5px 10px; border-radius:999px;background:#eef6df; color:#356b32; font-weight:800; font-size:12px;}
 .planet-rank-good{color:#137333; font-weight:900;}.planet-rank-bad{color:#b42318; font-weight:900;}
 .planet-score-bar{height:9px; border-radius:99px; background:#ede5c9; overflow:hidden; margin-top:6px;}.planet-score-fill{height:9px; border-radius:99px; background:linear-gradient(90deg,#6aa84f,#9bc66e);}
-.planet-table-wrap{border-radius:24px;border:1px solid #e2d5b3;background:rgba(255,253,245,.86);box-shadow:0 8px 24px rgba(71,57,30,.10);padding:12px;margin-top:10px;}
+
+.planet-table-wrap{position:relative;border-radius:24px;border:1px solid #d9c99f;background:linear-gradient(180deg,rgba(255,253,245,.96),rgba(248,242,222,.94));box-shadow:0 10px 26px rgba(71,57,30,.12);padding:12px 14px 16px 14px;margin-top:10px;overflow:hidden;}
+.planet-table-wrap:after{content:"🌱";position:absolute;right:18px;top:12px;font-size:28px;opacity:.72;}
+.planet-table-title{display:flex;align-items:center;gap:8px;color:#203047;font-size:18px;font-weight:900;margin:0 0 8px 2px;}
+.planet-asset-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #d8cda7;border-radius:12px;overflow:hidden;background:rgba(255,253,244,.78);font-size:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);}
+.planet-asset-table th{background:linear-gradient(180deg,#e8efd4,#dce8c5);color:#246133;font-weight:900;text-align:center;padding:7px 9px;border-right:1px solid rgba(163,151,112,.24);white-space:nowrap;}
+.planet-asset-table th:first-child{width:34px;}
+.planet-asset-table td{text-align:center;padding:7px 9px;border-top:1px solid rgba(185,174,135,.28);border-right:1px solid rgba(185,174,135,.22);color:#16243b;font-weight:650;white-space:nowrap;}
+.planet-asset-table td.asset-symbol{text-align:left;font-weight:900;color:#18304a;}
+.planet-asset-table .star-cell{color:#c8932b;font-size:15px;}
+.planet-asset-table .gain{color:#14783b;font-weight:950;}
+.planet-asset-table .loss{color:#c51f2f;font-weight:950;}
+.planet-asset-table-btn{display:block;width:max-content;margin:8px auto 0 auto;padding:6px 18px;border-radius:999px;background:linear-gradient(180deg,#eef7dc,#dcefc7);border:1px solid #bfd7a6;color:#2f6b30;font-size:13px;font-weight:900;text-align:center;box-shadow:0 3px 8px rgba(71,57,30,.08);}
+@media(max-width:900px){.planet-asset-table{font-size:12px}.planet-asset-table th,.planet-asset-table td{padding:6px 5px}}
 div[data-testid="stDataFrame"]{border:1px solid #e5d9b9 !important;background:#fffdf5 !important;border-radius:18px !important;box-shadow:0 6px 16px rgba(71,57,30,.07) !important;}
 .phase1-bar{height:22px !important; background:#edf0d9 !important; box-shadow:inset 0 2px 5px rgba(85,75,35,.12);}.phase1-bar-fill{background:linear-gradient(90deg,#69aa50,#9dcc68,#f0c05a) !important;}.phase1-stage-item b{color:#355d2e;}
 @media(max-width:1200px){.planet-soft-card{min-height:auto;}}
@@ -727,7 +740,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.0｜側欄完全貼合修正版</div>
+  <div class="small">v13.1｜資產明細表童話修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1208,57 +1221,71 @@ else:
     st.markdown(dashboard_html, unsafe_allow_html=True)
 
     st.markdown('---')
-    st.markdown('### 📋 綜合資產明細表（核心現金流前置）')
 
-    # 資料表複製與格式化顯示
+    # 資料表複製與格式化顯示：改成最終版卡片式表格，不再使用 st.dataframe 的白底格線樣式
     v = p.copy()
-    v['總投入本金顯示'] = v['總投入本金'].map(fmt_money0)
     v['總股數顯示'] = v['總股數'].map(lambda x: f"{x:,.0f} 股")
     v['平均成本顯示'] = v['平均成本'].map(fmt_money2)
     v['目前現價顯示'] = v['目前現價'].map(fmt_money2)
     v['目前現值顯示'] = v['目前現值'].map(fmt_money0)
     v['累積配息顯示'] = v['累積配息'].map(fmt_money0)
-    v['未實現損益顯示'] = v['未實現損益'].map(lambda x: f"${x:+,.0f}")
-    v['總報酬率顯示'] = v['總報酬率 (%)'].map(fmt_pct)
+    v['未實現損益顯示'] = v['未實現損益'].map(lambda x: f"{x:+,.0f}")
+    v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
-    # 格式化連動後預估指標
-    v['單次現金'] = v['cash_per_time'].map(lambda x: f"${x:,.3f}")
-    v['單次配股'] = v['stock_per_time'].map(lambda x: f"{x:,.3f} 元")
-    v['預估每月現金'] = v['未來預估月均現金'].map(fmt_money0)
-    v['預估年度現金'] = v['未來預估年現金'].map(fmt_money0)
-    v['預估年度配股'] = v['未來預估年配股_張'].map(lambda x: f"{x:,.3f} 張")
+    asset_rows = []
+    for _, r in v.head(5).iterrows():
+        pnl_cls = 'gain' if float(r.get('未實現損益', 0) or 0) >= 0 else 'loss'
+        ret_cls = 'gain' if float(r.get('總報酬率 (%)', 0) or 0) >= 0 else 'loss'
+        asset_rows.append(f"""
+        <tr>
+          <td class='star-cell'>☆</td>
+          <td class='asset-symbol'>{_esc(r['symbol'])}</td>
+          <td>{_esc(r['總股數顯示'])}</td>
+          <td class='gain'>{_esc(r['預估年化現金殖利率顯示'])}</td>
+          <td>{_esc(r['平均成本顯示'])}</td>
+          <td>{_esc(r['目前現價顯示'])}</td>
+          <td>{_esc(r['目前現值顯示'])}</td>
+          <td>{_esc(r['累積配息顯示'])}</td>
+          <td class='{pnl_cls}'>{_esc(r['未實現損益顯示'])}</td>
+          <td class='{ret_cls}'>{_esc(r['總報酬率顯示'])}</td>
+        </tr>
+        """)
+
+    if not asset_rows:
+        asset_table_html = "<div style='padding:28px;text-align:center;color:#8a8067;'>目前沒有資產資料。</div>"
+    else:
+        asset_table_html = f"""
+        <table class='planet-asset-table'>
+          <thead>
+            <tr>
+              <th></th><th>資產代碼</th><th>總股數</th><th>預估殖利率</th><th>平均成本</th>
+              <th>目前現價</th><th>目前現值</th><th>累積配息</th><th>未實現損益</th><th>總報酬率</th>
+            </tr>
+          </thead>
+          <tbody>{''.join(asset_rows)}</tbody>
+        </table>
+        <div class='planet-asset-table-btn'>查看全部資產　⌄</div>
+        """
+
+    st.markdown(f"""
+    <div class='planet-table-wrap'>
+      <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
+      {asset_table_html}
+    </div>
+    """, unsafe_allow_html=True)
 
     show_cols = [
-        'symbol',
-        '總股數顯示',
-        '預估年化現金殖利率顯示',
-        '平均成本顯示',
-        '目前現價顯示',
-        '目前現值顯示',
-        '累積配息顯示',
-        '未實現損益顯示',
-        '總報酬率顯示'
+        'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
+        '目前現值顯示', '累積配息顯示', '未實現損益顯示', '總報酬率顯示'
     ]
-
     rename_dict = {
-        'symbol': '資產代碼',
-        '總股數顯示': '總股數',
-        '總投入本金顯示': '總投入本金',
-        '平均成本顯示': '平均成本',
-        '目前現價顯示': '目前現價',
-        '目前現值顯示': '目前現值',
-        '累積配息顯示': '累積配息',
-        '未實現損益顯示': '未實現損益',
-        '總報酬率顯示': '總報酬率 (%)',
-        '預估年化現金殖利率顯示': '預估現金殖利率',
-        'frequency': '配息週期'
+        'symbol': '資產代碼', '總股數顯示': '總股數', '平均成本顯示': '平均成本',
+        '目前現價顯示': '目前現價', '目前現值顯示': '目前現值', '累積配息顯示': '累積配息',
+        '未實現損益顯示': '未實現損益', '總報酬率顯示': '總報酬率 (%)',
+        '預估年化現金殖利率顯示': '預估現金殖利率'
     }
-
     display_df = v[show_cols].rename(columns=rename_dict)
-    st.markdown('<div class="planet-table-wrap">', unsafe_allow_html=True)
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # 未來配息行事曆：依已輸入公告 + 持股股數自動估算
     st.markdown("---")
