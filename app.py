@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.8｜資產表展開錯誤修正版</div>
+  <div class="small">v13.9｜資產表按鈕連結修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1284,6 +1284,7 @@ else:
         """
 
     toggle_label = '收合資產清單 ⌃' if asset_expanded else '查看全部資產 ⌄'
+    toggle_href = '?asset_table=top#asset-table' if asset_expanded else '?asset_table=all#asset-table'
 
     planet_table_component_html = f"""
 <style>
