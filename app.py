@@ -1063,7 +1063,7 @@ else:
     st.markdown(f"""
     <div class="phase1-kpi-grid">
       <div class="phase1-kpi-card green">
-        <div class="phase1-kpi-icon crop-left" style="background-image:url(data:image/png;base64,{UI_ASSETS['flag']})"></div>
+        <div class="phase1-kpi-icon crop-left" style="background-image:url(data:image/png;base64,{UI_ASSETS['rose']})"></div>
         <div><div class="label">總投入本金</div><div class="value">${t_amt:,}</div><div class="note">含買入成本與手續費</div></div>
       </div>
       <div class="phase1-kpi-card blue">
