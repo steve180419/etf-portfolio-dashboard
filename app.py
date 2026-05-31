@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.4｜資產明細表展開修正版</div>
+  <div class="small">v13.5｜資產按鈕樣式修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1294,11 +1294,44 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 </div>
 """
     shown_asset_rows = min(asset_limit, len(v))
-    table_component_height = max(315, 165 + shown_asset_rows * 42)
+    table_component_height = max(292, 118 + shown_asset_rows * 42)
     components.html(planet_table_component_html, height=table_component_height, scrolling=False)
 
+    # v13.5：讓「查看全部資產」按鈕貼近資產卡片，並改回最終版綠色膠囊樣式
+    st.markdown('''
+    <style>
+    /* 只針對資產表後方這一排按鈕做視覺修正：上移、縮短寬度、綠色膠囊 */
+    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) {
+        margin-top: -34px !important;
+        margin-bottom: 8px !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) .stButton > button {
+        width: auto !important;
+        min-width: 150px !important;
+        max-width: 190px !important;
+        margin: 0 auto !important;
+        display: block !important;
+        padding: 7px 22px !important;
+        border-radius: 999px !important;
+        background: linear-gradient(180deg,#eef8df 0%,#d9efc5 100%) !important;
+        border: 1px solid #b9d89e !important;
+        color: #2f6b30 !important;
+        font-size: 14px !important;
+        font-weight: 900 !important;
+        box-shadow: 0 5px 12px rgba(71,57,30,.10), inset 0 1px 0 rgba(255,255,255,.85) !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#asset-toggle-marker) .stButton > button:hover {
+        background: linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%) !important;
+        border-color: #9ec880 !important;
+        color: #235d26 !important;
+    }
+    </style>
+    ''', unsafe_allow_html=True)
     btn_col_l, btn_col_m, btn_col_r = st.columns([1, 1, 1])
     with btn_col_m:
+        st.markdown('<span id="asset-toggle-marker"></span>', unsafe_allow_html=True)
         if st.session_state.show_all_assets:
             if st.button('收合資產清單　⌃', key='toggle_all_assets', use_container_width=True):
                 st.session_state.show_all_assets = False
