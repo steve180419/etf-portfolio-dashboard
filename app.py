@@ -1236,8 +1236,11 @@ else:
 
     # v13.7：把展開/收合控制移回 HTML 卡片內，用 target=_parent 重新載入頁面
     # 這樣按鈕會維持在表格卡片內，不會因 Streamlit 原生按鈕跑到卡片外面。
-    try:
-        _asset_qp = st.query_params
+    if 'asset_expanded' not in st.session_state:
+        st.session_state.asset_expanded=False
+    asset_expanded=st.session_state.asset_expanded
+
+    #
         _asset_view = _asset_qp.get("asset_table", "top")
     except Exception:
         _asset_qp = st.experimental_get_query_params()
@@ -1279,8 +1282,7 @@ else:
         </table>
         """
 
-    toggle_label = '收合資產清單　⌃' if asset_expanded else '查看全部資產　⌄'
-    toggle_href = '?asset_table=top#asset-table' if asset_expanded else '?asset_table=all#asset-table'
+    toggle_label = '收合資產清單 ⌃' if asset_expanded else '查看全部資產 ⌄'
 
     planet_table_component_html = f"""
 <style>
@@ -1310,7 +1312,7 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 </div>
 """
     shown_asset_rows = min(asset_limit, len(v))
-    table_component_height = 112 + shown_asset_rows * 42
+    table_component_height = max(220, 150 + shown_asset_rows * 44)
     components.html(planet_table_component_html, height=table_component_height, scrolling=False)
 
     show_cols = [
