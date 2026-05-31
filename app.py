@@ -758,7 +758,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.5｜退休目標角色完整顯示修正版</div>
+  <div class="small">v14.6｜退休目標角色來源修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1088,8 +1088,8 @@ else:
           <div style="text-align:right"><div class="phase1-mini-label">目前資產</div><div class="phase1-mini-value">${t_val:,}</div></div>
         </div>
         <div class="phase1-bar"><div class="phase1-bar-fill" style="width:{bar_width_phase1:.1f}%"></div></div>
-        <img class="phase1-fox" src="data:image/png;base64,{UI_ASSETS['fox']}" />
-        <img class="phase1-prince" src="data:image/png;base64,{UI_ASSETS['prince_stand']}" />
+        <div class="phase1-fox-emoji">🦊</div>
+        <img class="phase1-prince" src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
         <div class="phase1-stage">
           <div class="phase1-stage-item"><span class="emoji">🌱</span><b>幼苗</b><br>0~25%</div>
           <div class="phase1-stage-item"><span class="emoji">🌿</span><b>成長</b><br>25~50%</div>
@@ -1409,6 +1409,71 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 .phase1-bar {
     margin-left: 110px !important;
     margin-right: 110px !important;
+}
+
+
+
+/* v14.6 退休目標角色圖來源修正：避免使用低解析裁切圖片 */
+.phase1-card:has(.phase1-fox-emoji),
+.phase1-card:has(.phase1-prince),
+.phase1-goal-card,
+.phase1-progress-card {
+    overflow: visible !important;
+    min-height: 300px !important;
+    padding-bottom: 46px !important;
+}
+
+.phase1-fox {
+    display: none !important;
+}
+
+.phase1-fox-emoji {
+    position: absolute !important;
+    left: 34px !important;
+    bottom: 34px !important;
+    z-index: 15 !important;
+    width: 88px !important;
+    height: 88px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 74px !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    filter: drop-shadow(0 6px 10px rgba(120, 88, 28, .15)) !important;
+}
+
+.phase1-prince {
+    position: absolute !important;
+    right: 22px !important;
+    bottom: 12px !important;
+    width: 135px !important;
+    max-width: 135px !important;
+    max-height: 135px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+    z-index: 15 !important;
+}
+
+.phase1-stage {
+    padding-left: 145px !important;
+    padding-right: 170px !important;
+}
+
+.phase1-stage:before {
+    left: 174px !important;
+    right: 195px !important;
+}
+
+.phase1-bar {
+    margin-left: 118px !important;
+    margin-right: 132px !important;
 }
 
 </style>
