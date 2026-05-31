@@ -19,7 +19,7 @@ UI_ASSETS = {
 
 
 # =====================================================
-# 鵬鵬的退休星球 v10.6
+# 鵬鵬的退休星球 v10.7
 # 重點：第一階段版面重構、星球首頁、KPI 卡片、退休進度區
 # =====================================================
 
@@ -93,7 +93,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休星球 v10.6", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休星球 v10.7", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -503,6 +503,35 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 </style>
 """, unsafe_allow_html=True)
 
+
+
+# --- v10.7：終極版首頁美化補強（側欄、卡片、表格、儀表小卡） ---
+st.markdown("""
+<style>
+[data-testid="stSidebar"]{background:linear-gradient(180deg,#fff6dc 0%,#fbefd0 100%) !important;border-right:1px solid #e8d7ad !important;box-shadow:8px 0 24px rgba(71,57,30,.08);}
+.sidebar-planet-title{padding:16px 12px 10px 12px;color:#203047;font-weight:900;line-height:1.35;}
+.sidebar-planet-title .big{font-size:22px; letter-spacing:.5px;}
+.sidebar-planet-title .small{font-size:13px; color:#6b644f; margin-top:4px;}
+.sidebar-quote{margin:16px 4px 18px 4px;padding:18px 16px;border-radius:20px;border:1px solid #e7d7ad;background:rgba(255,253,245,.82);box-shadow:0 8px 22px rgba(71,57,30,.08);color:#5d553e;text-align:center;font-size:14px;line-height:1.9;}
+.sidebar-quote .star{font-size:20px; color:#d99a25;}.sidebar-quote .sign{font-size:12px; margin-top:8px; color:#776b4f;}
+[data-testid="stSidebar"] .stSelectbox, [data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput, [data-testid="stSidebar"] .stDateInput,[data-testid="stSidebar"] .stRadio{background:rgba(255,255,255,.36);border-radius:16px;padding:4px 8px 8px 8px;}
+[data-testid="stSidebar"] .stButton>button,[data-testid="stSidebar"] .stDownloadButton>button{width:100%;border-radius:16px !important;background:linear-gradient(180deg,#f9f4d5,#e7eec4) !important;border:1px solid #d8c88d !important;color:#315b33 !important;box-shadow:0 4px 10px rgba(71,57,30,.10);}
+.planet-section-title{display:flex; align-items:center; gap:10px;font-size:20px; font-weight:900; color:#25364e;margin:18px 0 10px 0;}
+.planet-soft-card{position:relative;min-height:250px;padding:18px 18px 16px 18px;border-radius:22px;border:1px solid #e4d8bb;background:linear-gradient(180deg,rgba(255,253,245,.96),rgba(248,241,216,.92));box-shadow:0 8px 24px rgba(71,57,30,.10);overflow:hidden;}
+.planet-soft-card:after{content:"✦";position:absolute; right:18px; top:14px;color:#dca928; opacity:.55; font-size:20px;}
+.planet-soft-card h4{margin:0 0 12px 0; color:#203047; font-size:17px; font-weight:900;}
+.planet-mini-row{display:flex; justify-content:space-between; align-items:center;padding:8px 0; border-bottom:1px dashed rgba(147,132,93,.28);font-size:14px;}
+.planet-mini-row:last-child{border-bottom:none;}.planet-mini-row b{color:#172033;}
+.planet-pill{display:inline-block; padding:5px 10px; border-radius:999px;background:#eef6df; color:#356b32; font-weight:800; font-size:12px;}
+.planet-rank-good{color:#137333; font-weight:900;}.planet-rank-bad{color:#b42318; font-weight:900;}
+.planet-score-bar{height:9px; border-radius:99px; background:#ede5c9; overflow:hidden; margin-top:6px;}.planet-score-fill{height:9px; border-radius:99px; background:linear-gradient(90deg,#6aa84f,#9bc66e);}
+.planet-table-wrap{border-radius:24px;border:1px solid #e2d5b3;background:rgba(255,253,245,.86);box-shadow:0 8px 24px rgba(71,57,30,.10);padding:12px;margin-top:10px;}
+div[data-testid="stDataFrame"]{border:1px solid #e5d9b9 !important;background:#fffdf5 !important;border-radius:18px !important;box-shadow:0 6px 16px rgba(71,57,30,.07) !important;}
+.phase1-bar{height:22px !important; background:#edf0d9 !important; box-shadow:inset 0 2px 5px rgba(85,75,35,.12);}.phase1-bar-fill{background:linear-gradient(90deg,#69aa50,#9dcc68,#f0c05a) !important;}.phase1-stage-item b{color:#355d2e;}
+@media(max-width:1200px){.planet-soft-card{min-height:auto;}}
+</style>
+""", unsafe_allow_html=True)
+
 def kpi_card(title, value, note="", asset_key="star", tone=""):
     img_b64 = UI_ASSETS.get(asset_key, UI_ASSETS["star"])
     st.markdown(f"""
@@ -610,6 +639,19 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 
 
 # --- 側邊欄：資料庫備份 / 還原 ---
+
+st.sidebar.markdown(f"""
+<div class="sidebar-planet-title">
+  <div class="big">⭐ 鵬鵬的退休計畫系統</div>
+  <div class="small">v10.7｜退休星球進化版</div>
+</div>
+<div class="sidebar-quote">
+  <div class="star">✦</div>
+  重要的東西，<br>用眼睛是看不見的，<br>要用心才能看見。<br>
+  <div class="sign">— 小王子</div>
+</div>
+""", unsafe_allow_html=True)
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("🛡️ 資料備份 / 還原")
 
@@ -928,43 +970,83 @@ else:
 
     st.markdown("### 🌌 退休星球總覽")
 
-    # 資產配置與損益排行
-    left_chart, right_rank = st.columns([1.2, 1])
+    # v10.7：首頁下方四張儀表小卡（往目標圖靠近）
+    st.markdown('<div class="planet-section-title">🪐 星球儀表小卡</div>', unsafe_allow_html=True)
 
-    with left_chart:
-        st.markdown('<div class="panel-title">📊 資產配置分析</div>', unsafe_allow_html=True)
-        pie_df = p[p['目前現值'] > 0][['symbol', '目前現值']].copy()
-        if pie_df.empty:
-            st.info("目前沒有可繪製的資產配置資料。")
+    dash1, dash2, dash3, dash4 = st.columns([1.15, 1.05, 1.05, 1.15])
+
+    def classify_asset_symbol(sym):
+        s = str(sym).upper()
+        if s.endswith('B.TW') or s.endswith('B') or 'BOND' in s:
+            return '債券型ETF'
+        if s.startswith('00') or s.endswith('.TW'):
+            return '高股息ETF'
+        if any(k in s for k in ['GLD', 'GOLD', 'IAU']):
+            return '黃金/商品'
+        return '其他'
+
+    alloc_df = p[['symbol', '目前現值']].copy()
+    alloc_df['分類'] = alloc_df['symbol'].map(classify_asset_symbol)
+    cat_df = alloc_df.groupby('分類', as_index=False)['目前現值'].sum().sort_values('目前現值', ascending=False)
+    total_alloc = cat_df['目前現值'].sum() if not cat_df.empty else 0
+
+    with dash1:
+        st.markdown('<div class="planet-soft-card"><h4>🌿 資產配置</h4>', unsafe_allow_html=True)
+        if total_alloc <= 0:
+            st.caption('目前沒有可分析的資產配置。')
         else:
-            chart_df = pie_df.set_index('symbol')
-            st.bar_chart(chart_df, use_container_width=True)
-            pie_df['配置比例'] = pie_df['目前現值'] / pie_df['目前現值'].sum()
-            pie_df['目前現值'] = pie_df['目前現值'].map(fmt_money0)
-            pie_df['配置比例'] = pie_df['配置比例'].map(lambda x: f"{x:.2%}")
-            st.dataframe(
-                pie_df.rename(columns={'symbol': '資產代碼', '目前現值': '目前現值', '配置比例': '配置比例'}),
-                use_container_width=True,
-                hide_index=True
-            )
+            st.bar_chart(cat_df.set_index('分類'), use_container_width=True, height=150)
+            for _, r in cat_df.iterrows():
+                pct = 0 if total_alloc == 0 else r['目前現值'] / total_alloc * 100
+                st.markdown(f'<div class="planet-mini-row"><span>{r["分類"]}</span><b>{pct:.1f}%</b></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    with right_rank:
-        st.markdown('<div class="panel-title">🏆 損益排行</div>', unsafe_allow_html=True)
-        gain_df = p.sort_values(by="未實現損益", ascending=False)[['symbol', '未實現損益', '總報酬率 (%)']].head(5).copy()
-        loss_df = p.sort_values(by="未實現損益", ascending=True)[['symbol', '未實現損益', '總報酬率 (%)']].head(5).copy()
+    with dash2:
+        st.markdown('<div class="planet-soft-card"><h4>🚀 資產配置星圖</h4>', unsafe_allow_html=True)
+        score_yield = min(max(p['預估年化現金殖利率 (%)'].mean() if not p.empty else 0, 0), 12) / 12 * 100
+        score_profit = min(max(total_return, 0), 50) / 50 * 100
+        score_div = min((t_div / max(t_amt, 1)) * 100, 20) / 20 * 100
+        score_conc = 100 - min((p['目前現值'].max() / max(t_val, 1)) * 100 if not p.empty else 0, 100)
+        for name, score in [('現金流', score_yield), ('報酬率', score_profit), ('配息累積', score_div), ('分散度', score_conc)]:
+            st.markdown(f'<div class="planet-mini-row"><span>{name}</span><b>{score:.0f}</b></div><div class="planet-score-bar"><div class="planet-score-fill" style="width:{max(3, score):.1f}%"></div></div>', unsafe_allow_html=True)
+        st.caption('先用分數條模擬雷達圖；下一版可升級成真正雷達圖。')
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        gain_df['未實現損益'] = gain_df['未實現損益'].map(lambda x: f"${x:+,.0f}")
-        gain_df['總報酬率 (%)'] = gain_df['總報酬率 (%)'].map(fmt_pct)
-        loss_df['未實現損益'] = loss_df['未實現損益'].map(lambda x: f"${x:+,.0f}")
-        loss_df['總報酬率 (%)'] = loss_df['總報酬率 (%)'].map(fmt_pct)
+    with dash3:
+        st.markdown('<div class="planet-soft-card"><h4>🏆 損益排行榜</h4>', unsafe_allow_html=True)
+        rank_df = p.sort_values(by='未實現損益', ascending=False)[['symbol', '未實現損益']].head(5).copy()
+        if rank_df.empty:
+            st.caption('目前沒有損益資料。')
+        else:
+            medals = ['🥇','🥈','🥉','4','5']
+            for i, (_, r) in enumerate(rank_df.iterrows()):
+                cls = 'planet-rank-good' if r['未實現損益'] >= 0 else 'planet-rank-bad'
+                st.markdown(f'<div class="planet-mini-row"><span>{medals[i]}&nbsp; {r["symbol"]}</span><span class="{cls}">${r["未實現損益"]:+,.0f}</span></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.caption("獲利 TOP 5")
-        st.dataframe(gain_df.rename(columns={'symbol': '資產代碼'}), use_container_width=True, hide_index=True)
-        st.caption("虧損 TOP 5")
-        st.dataframe(loss_df.rename(columns={'symbol': '資產代碼'}), use_container_width=True, hide_index=True)
+    with dash4:
+        st.markdown('<div class="planet-soft-card"><h4>📅 近期配息行事曆</h4>', unsafe_allow_html=True)
+        if df_cal.empty:
+            st.caption('目前還沒有未來配息公告。')
+            st.markdown('<span class="planet-pill">到左側新增配息公告</span>', unsafe_allow_html=True)
+        else:
+            cal_preview = df_cal.copy()
+            cal_preview['payment_date'] = pd.to_datetime(cal_preview['payment_date'], errors='coerce')
+            cal_preview = pd.merge(cal_preview, p[['symbol','總股數']], on='symbol', how='left')
+            cal_preview['總股數'] = cal_preview['總股數'].fillna(0)
+            cal_preview['預估入帳'] = cal_preview['總股數'] * cal_preview['dividend_per_share']
+            cal_preview = cal_preview[cal_preview['payment_date'].notna()].sort_values('payment_date').head(4)
+            if cal_preview.empty:
+                st.caption('目前沒有可顯示的發放日。')
+            else:
+                for _, r in cal_preview.iterrows():
+                    d = r['payment_date'].strftime('%m/%d')
+                    st.markdown(f'<div class="planet-mini-row"><span>{d}&nbsp; {r["symbol"]}</span><b>${r["預估入帳"]:,.0f}</b></div>', unsafe_allow_html=True)
+        st.markdown('<div class="sidebar-quote" style="margin-top:14px;padding:12px;line-height:1.6;">🌳 今日小語<br>耐心澆灌，財富之樹終會長成森林。</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.markdown("### 📋 綜合資產明細表（核心現金流前置）")
+    st.markdown('---')
+    st.markdown('### 📋 綜合資產明細表（核心現金流前置）')
 
     # 資料表複製與格式化顯示
     v = p.copy()
@@ -1012,7 +1094,9 @@ else:
     }
 
     display_df = v[show_cols].rename(columns=rename_dict)
+    st.markdown('<div class="planet-table-wrap">', unsafe_allow_html=True)
     st.dataframe(display_df, use_container_width=True, hide_index=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # 未來配息行事曆：依已輸入公告 + 持股股數自動估算
     st.markdown("---")
