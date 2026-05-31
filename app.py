@@ -19,7 +19,7 @@ UI_ASSETS = {
 
 
 # =====================================================
-# 鵬鵬的退休星球 v10.7
+# 鵬鵬的退休星球 v12.3
 # 重點：第一階段版面重構、星球首頁、KPI 卡片、退休進度區
 # =====================================================
 
@@ -93,7 +93,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休星球 v10.7", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休星球 v12.3", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -509,11 +509,20 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 st.markdown("""
 <style>
 [data-testid="stSidebar"]{background:linear-gradient(180deg,#fff6dc 0%,#fbefd0 100%) !important;border-right:1px solid #e8d7ad !important;box-shadow:8px 0 24px rgba(71,57,30,.08);}
-.sidebar-planet-title{padding:16px 12px 10px 12px;color:#203047;font-weight:900;line-height:1.35;}
-.sidebar-planet-title .big{font-size:22px; letter-spacing:.5px;}
+.sidebar-planet-title{padding:18px 12px 8px 12px;color:#203047;font-weight:900;line-height:1.35;}
+.sidebar-planet-title .big{font-size:23px; letter-spacing:.5px;}
 .sidebar-planet-title .small{font-size:13px; color:#6b644f; margin-top:4px;}
+.sidebar-hero{margin:8px 8px 10px 8px;text-align:center;}
+.sidebar-hero img{width:86%;max-width:210px;border-radius:22px;filter:drop-shadow(0 10px 18px rgba(68,53,20,.16));}
+.sidebar-nav{margin:10px 4px 18px 4px;padding:10px;border-radius:20px;background:rgba(255,253,244,.68);border:1px solid #ead8ac;box-shadow:0 8px 22px rgba(71,57,30,.07);}
+.sidebar-nav .item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:4px 0;border-radius:14px;color:#24344b;font-weight:850;font-size:15px;}
+.sidebar-nav .item.active{background:linear-gradient(90deg,#dfeec8,#f3f8e8);color:#17612d;box-shadow:inset 0 0 0 1px rgba(103,158,72,.12);}
+.sidebar-nav .item:hover{background:rgba(231,242,212,.9);}
+.sidebar-nav .ico{width:23px;text-align:center;font-size:18px;}
 .sidebar-quote{margin:16px 4px 18px 4px;padding:18px 16px;border-radius:20px;border:1px solid #e7d7ad;background:rgba(255,253,245,.82);box-shadow:0 8px 22px rgba(71,57,30,.08);color:#5d553e;text-align:center;font-size:14px;line-height:1.9;}
 .sidebar-quote .star{font-size:20px; color:#d99a25;}.sidebar-quote .sign{font-size:12px; margin-top:8px; color:#776b4f;}
+.sidebar-footer-planet{margin:16px 4px 6px 4px;padding:15px;border-radius:20px;background:linear-gradient(180deg,rgba(255,253,244,.85),rgba(251,239,208,.88));border:1px solid #e8d4a3;text-align:center;color:#6a6044;font-size:13px;line-height:1.8;box-shadow:0 8px 22px rgba(71,57,30,.08);}
+.sidebar-footer-planet .seed{font-size:26px;margin-bottom:2px;}
 [data-testid="stSidebar"] .stSelectbox, [data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput, [data-testid="stSidebar"] .stDateInput,[data-testid="stSidebar"] .stRadio{background:rgba(255,255,255,.36);border-radius:16px;padding:4px 8px 8px 8px;}
 [data-testid="stSidebar"] .stButton>button,[data-testid="stSidebar"] .stDownloadButton>button{width:100%;border-radius:16px !important;background:linear-gradient(180deg,#f9f4d5,#e7eec4) !important;border:1px solid #d8c88d !important;color:#315b33 !important;box-shadow:0 4px 10px rgba(71,57,30,.10);}
 .planet-section-title{display:flex; align-items:center; gap:10px;font-size:20px; font-weight:900; color:#25364e;margin:18px 0 10px 0;}
@@ -663,7 +672,21 @@ def make_excel_bytes(display_df, raw_df, tx_df, div_df, est_df, calendar_df=None
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v12.2｜退休星球版面修正版</div>
+  <div class="small">v12.3｜側欄星球完整化版</div>
+</div>
+<div class="sidebar-hero">
+  <img src="data:image/png;base64,{UI_ASSETS['prince_planet']}" />
+</div>
+<div class="sidebar-nav">
+  <div class="item active"><span class="ico">🏡</span><span>退休星球總覽</span></div>
+  <div class="item"><span class="ico">📊</span><span>資產星圖</span></div>
+  <div class="item"><span class="ico">💰</span><span>配息寶箱</span></div>
+  <div class="item"><span class="ico">🗓️</span><span>配息行事曆</span></div>
+  <div class="item"><span class="ico">🎯</span><span>退休任務中心</span></div>
+  <div class="item"><span class="ico">📈</span><span>損益排行榜</span></div>
+  <div class="item"><span class="ico">🧾</span><span>交易明細管理</span></div>
+  <div class="item"><span class="ico">⚙️</span><span>系統設定</span></div>
+  <div class="item"><span class="ico">🔄</span><span>備份 / 還原</span></div>
 </div>
 <div class="sidebar-quote">
   <div class="star">✦</div>
@@ -743,6 +766,14 @@ with st.sidebar.expander("📤 還原資料庫備份", expanded=False):
                         os.remove(temp_restore_path)
                 except Exception:
                     pass
+
+
+st.sidebar.markdown("""
+<div class="sidebar-footer-planet">
+  <div class="seed">🌱</div>
+  每一次投入，都是在替未來的星球澆水。
+</div>
+""", unsafe_allow_html=True)
 
 # --- 側邊欄：後台輸入 ---
 st.sidebar.header("⚙️ 系統資料輸入後台")
