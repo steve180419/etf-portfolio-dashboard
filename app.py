@@ -1093,7 +1093,7 @@ else:
           <div style="text-align:right"><div class="phase1-mini-label">目前資產</div><div class="phase1-mini-value">${t_val:,}</div></div>
         </div>
         <div class="phase1-bar"><div class="phase1-bar-fill" style="width:{bar_width_phase1:.1f}%"></div></div>
-        <div class="phase1-fox-emoji">🦊</div>
+        <img class="phase1-fox-emoji" src="data:image/png;base64,{UI_ASSETS['fox']}" />
         <img class="phase1-prince" src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
         <div class="phase1-stage">
           <div class="phase1-stage-item"><span class="emoji">🌱</span><b>幼苗</b><br>0~25%</div>
@@ -1439,11 +1439,8 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
     z-index: 15 !important;
     width: 88px !important;
     height: 88px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 74px !important;
-    line-height: 1 !important;
+    display: block !important;
+    object-fit: contain !important;
     background: transparent !important;
     filter: drop-shadow(0 6px 10px rgba(120, 88, 28, .15)) !important;
 }
