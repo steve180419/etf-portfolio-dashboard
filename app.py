@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.6｜資產按鈕樣式修正版</div>
+  <div class="small">v13.7｜資產按鈕樣式修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1234,14 +1234,16 @@ else:
     v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
-    # v13.6.1：改用 Streamlit session_state 控制展開/收合，確保按鈕點擊一定生效
-    if 'asset_table_expanded' not in st.session_state:
-        st.session_state.asset_table_expanded = False
+    # v13.7：把展開/收合控制移回 HTML 卡片內，用 target=_parent 重新載入頁面
+    # 這樣按鈕會維持在表格卡片內，不會因 Streamlit 原生按鈕跑到卡片外面。
+    try:
+        _asset_qp = st.query_params
+        _asset_view = _asset_qp.get("asset_table", "top")
+    except Exception:
+        _asset_qp = st.experimental_get_query_params()
+        _asset_view = (_asset_qp.get("asset_table", ["top"])[0] if isinstance(_asset_qp.get("asset_table"), list) else _asset_qp.get("asset_table", "top"))
 
-    def _toggle_asset_table():
-        st.session_state.asset_table_expanded = not st.session_state.asset_table_expanded
-
-    asset_expanded = bool(st.session_state.asset_table_expanded)
+    asset_expanded = str(_asset_view).lower() == "all"
     asset_limit = len(v) if asset_expanded else 5
     asset_rows = []
     for _, r in v.head(asset_limit).iterrows():
@@ -1278,6 +1280,7 @@ else:
         """
 
     toggle_label = '收合資產清單　⌃' if asset_expanded else '查看全部資產　⌄'
+    toggle_href = '?asset_table=top#asset-table' if asset_expanded else '?asset_table=all#asset-table'
 
     planet_table_component_html = f"""
 <style>
@@ -1293,35 +1296,22 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 .planet-asset-table .star-cell {{ color:#c8932b; font-size:15px; }}
 .planet-asset-table .gain {{ color:#14783b; font-weight:950; }}
 .planet-asset-table .loss {{ color:#c51f2f; font-weight:950; }}
+.planet-asset-table-btn-row {{ display:flex; justify-content:center; align-items:center; margin:8px 0 0 0; }}
+.planet-asset-table-btn {{ display:inline-flex; align-items:center; justify-content:center; min-width:132px; height:32px; padding:0 16px; border-radius:14px; background:linear-gradient(180deg,#edf7dc 0%,#d9efc5 100%); border:1px solid #b9d89e; color:#2f6b30!important; font-size:13px; font-weight:900; text-align:center; text-decoration:none; box-shadow:0 2px 6px rgba(71,57,30,.07), inset 0 1px 0 rgba(255,255,255,.85); box-sizing:border-box; }}
+.planet-asset-table-btn:hover {{ background:linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%); border-color:#9ec880; color:#235d26!important; text-decoration:none; }}
 </style>
+<span id='asset-table'></span>
 <div class='planet-table-wrap'>
   <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
   {asset_table_html}
+  <div class='planet-asset-table-btn-row'>
+    <a class='planet-asset-table-btn' href='{toggle_href}' target='_parent'>{toggle_label}</a>
+  </div>
 </div>
 """
     shown_asset_rows = min(asset_limit, len(v))
-    table_component_height = 102 + shown_asset_rows * 42
+    table_component_height = 112 + shown_asset_rows * 42
     components.html(planet_table_component_html, height=table_component_height, scrolling=False)
-
-    # 讓 Streamlit 原生按鈕長得像最終版的淡綠色膠囊，並緊貼資產表底部
-    st.markdown('''
-    <style>
-    div[data-testid="stButton"] { display:flex; justify-content:center; margin-top:-10px; margin-bottom:6px; }
-    div[data-testid="stButton"] > button {
-        min-width:128px !important; width:auto !important; height:32px !important;
-        padding:0 16px !important; border-radius:14px !important;
-        background:linear-gradient(180deg,#edf7dc 0%,#d9efc5 100%) !important;
-        border:1px solid #b9d89e !important; color:#2f6b30 !important;
-        font-size:13px !important; font-weight:900 !important;
-        box-shadow:0 2px 6px rgba(71,57,30,.07), inset 0 1px 0 rgba(255,255,255,.85) !important;
-    }
-    div[data-testid="stButton"] > button:hover {
-        background:linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%) !important;
-        border-color:#9ec880 !important; color:#235d26 !important;
-    }
-    </style>
-    ''', unsafe_allow_html=True)
-    st.button(toggle_label, key='asset_table_toggle_button', on_click=_toggle_asset_table)
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
