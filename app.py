@@ -742,7 +742,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.1｜資產表HTML顯示修正版</div>
+  <div class="small">v14.2｜資產表原生展開修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1235,20 +1235,11 @@ else:
     v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
-    # v13.8：修正資產表展開/收合 query params 區塊縮排錯誤
-    # 使用 URL 參數控制，讓按鈕維持在 HTML 卡片內，不被 Streamlit 排版擠出去。
-    try:
-        _asset_qp = st.query_params
-        _asset_view = _asset_qp.get("asset_table", "top")
-    except Exception:
-        _asset_qp = st.experimental_get_query_params()
-        _asset_view = (
-            _asset_qp.get("asset_table", ["top"])[0]
-            if isinstance(_asset_qp.get("asset_table"), list)
-            else _asset_qp.get("asset_table", "top")
-        )
-
-    asset_expanded = str(_asset_view).lower() == "all"
+    # v14.2：改用 Streamlit 原生 session_state 控制展開/收合
+    # 不再使用 HTML <a> 或 query params，避免 Cloud iframe / markdown 連結失效。
+    if "asset_table_expanded" not in st.session_state:
+        st.session_state.asset_table_expanded = False
+    asset_expanded = bool(st.session_state.asset_table_expanded)
     asset_limit = len(v) if asset_expanded else 5
     asset_rows = []
     for _, r in v.head(asset_limit).iterrows():
@@ -1285,12 +1276,11 @@ else:
         """).strip()
 
     toggle_label = '收合資產清單 ⌃' if asset_expanded else '查看全部資產 ⌄'
-    toggle_href = '?asset_table=top#asset-table' if asset_expanded else '?asset_table=all#asset-table'
 
     planet_table_component_html = f"""
 <style>
 html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; }}
-.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 12px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
+.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 60px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
 .planet-table-wrap:after {{ content:'🌱'; position:absolute; right:14px; top:8px; font-size:28px; opacity:.75; }}
 .planet-table-title {{ color:#11233f; font-weight:900; font-size:20px; margin:0 0 8px 0; letter-spacing:.3px; }}
 .planet-asset-table {{ width:100%; border-collapse:separate; border-spacing:0; border:1px solid #d8cda7; border-radius:12px; overflow:hidden; background:rgba(255,253,244,.78); font-size:13px; box-shadow:inset 0 1px 0 rgba(255,255,255,.7); }}
@@ -1309,9 +1299,6 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
 <div class='planet-table-wrap'>
   <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
   {asset_table_html}
-  <div class='planet-asset-table-btn-row'>
-    <a class='planet-asset-table-btn' href='{toggle_href}' target='_parent'>{toggle_label}</a>
-  </div>
 </div>
 """
     # v14.0：改用 st.markdown 直接渲染資產表 HTML。
@@ -1319,6 +1306,47 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
     # 導致「查看全部資產」看起來能點、但頁面參數沒有改變。
     # 直接渲染在主頁面後，href 才會真正更新 ?asset_table=all / top。
     st.markdown(textwrap.dedent(planet_table_component_html).strip(), unsafe_allow_html=True)
+
+    # v14.2：真正可點擊的原生 Streamlit 按鈕。用 CSS 壓回資產表卡片底部位置。
+    st.markdown("""
+    <style>
+    div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) {
+        margin-top: -50px !important;
+        margin-bottom: 32px !important;
+        position: relative !important;
+        z-index: 20 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) .stButton > button {
+        width: auto !important;
+        min-width: 132px !important;
+        max-width: 180px !important;
+        height: 32px !important;
+        margin: 0 auto !important;
+        display: block !important;
+        padding: 0 16px !important;
+        border-radius: 14px !important;
+        background: linear-gradient(180deg,#edf7dc 0%,#d9efc5 100%) !important;
+        border: 1px solid #b9d89e !important;
+        color: #2f6b30 !important;
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        box-shadow: 0 2px 6px rgba(71,57,30,.07), inset 0 1px 0 rgba(255,255,255,.85) !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) .stButton > button:hover {
+        background: linear-gradient(180deg,#e5f5d2 0%,#cce9b8 100%) !important;
+        border-color: #9ec880 !important;
+        color: #235d26 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    _asset_btn_left, _asset_btn_mid, _asset_btn_right = st.columns([1, 1, 1])
+    with _asset_btn_mid:
+        st.markdown('<span id="asset-native-toggle-marker"></span>', unsafe_allow_html=True)
+        if st.button(toggle_label, key="asset_table_native_toggle", use_container_width=True):
+            st.session_state.asset_table_expanded = not st.session_state.asset_table_expanded
+            st.rerun()
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
