@@ -741,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.7｜資產按鈕樣式修正版</div>
+  <div class="small">v13.8｜資產表展開錯誤修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1234,17 +1234,18 @@ else:
     v['總報酬率顯示'] = v['總報酬率 (%)'].map(lambda x: f"{x:+.2f}%")
     v['預估年化現金殖利率顯示'] = v['預估年化現金殖利率 (%)'].map(lambda x: f"{x:.2f}%")
 
-    # v13.7：把展開/收合控制移回 HTML 卡片內，用 target=_parent 重新載入頁面
-    # 這樣按鈕會維持在表格卡片內，不會因 Streamlit 原生按鈕跑到卡片外面。
-    if 'asset_expanded' not in st.session_state:
-        st.session_state.asset_expanded=False
-    asset_expanded=st.session_state.asset_expanded
-
-    #
+    # v13.8：修正資產表展開/收合 query params 區塊縮排錯誤
+    # 使用 URL 參數控制，讓按鈕維持在 HTML 卡片內，不被 Streamlit 排版擠出去。
+    try:
+        _asset_qp = st.query_params
         _asset_view = _asset_qp.get("asset_table", "top")
     except Exception:
         _asset_qp = st.experimental_get_query_params()
-        _asset_view = (_asset_qp.get("asset_table", ["top"])[0] if isinstance(_asset_qp.get("asset_table"), list) else _asset_qp.get("asset_table", "top"))
+        _asset_view = (
+            _asset_qp.get("asset_table", ["top"])[0]
+            if isinstance(_asset_qp.get("asset_table"), list)
+            else _asset_qp.get("asset_table", "top")
+        )
 
     asset_expanded = str(_asset_view).lower() == "all"
     asset_limit = len(v) if asset_expanded else 5
