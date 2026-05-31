@@ -141,6 +141,22 @@ st.markdown("""
 [data-testid="metric-container"] div{
     font-weight:700;
 }
+
+/* v14.4 退休目標進度角色圖修正：避免狐狸與小王子被裁切 */
+.phase1-card,
+.phase1-goal,
+.phase1-goal-card,
+.phase1-progress,
+.phase1-progress-card {
+    overflow: visible !important;
+}
+.phase1-fox,
+.phase1-prince {
+    display: block !important;
+    height: auto !important;
+    object-fit: contain !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -410,8 +426,8 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 .phase1-stage:before{content:""; position:absolute; left:90px; right:95px; top:28px; height:2px; background:#d9cda9;}
 .phase1-stage-item{position:relative; z-index:1; font-size:13px; line-height:1.35;}
 .phase1-stage-item .emoji{font-size:31px; display:block; margin-bottom:2px;}
-.phase1-fox{position:absolute; left:10px; bottom:16px; width:72px;}
-.phase1-prince{position:absolute; right:22px; bottom:12px; width:58px;}
+.phase1-fox{position:absolute; left:18px; bottom:22px; width:88px; z-index:3; object-fit:contain;}
+.phase1-prince{position:absolute; right:30px; bottom:18px; width:74px; z-index:3; object-fit:contain;}
 .phase1-income{padding-right:220px; min-height:214px;}
 .phase1-income .income-row{
     display:flex; align-items:center; gap:18px;
@@ -453,13 +469,13 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
 .phase1-panel{
     min-height:246px !important;
     overflow:hidden !important;
-    padding:24px 28px 22px 28px !important;
+    padding:24px 28px 34px 28px !important;
 }
 .phase1-bar{margin:14px 92px 30px 74px !important;}
-.phase1-stage{padding:0 92px 0 98px !important;}
-.phase1-stage:before{left:118px !important; right:118px !important;}
-.phase1-fox{left:22px !important; bottom:24px !important; width:60px !important;}
-.phase1-prince{right:28px !important; bottom:24px !important; width:52px !important;}
+.phase1-stage{padding:0 118px 0 130px !important;}
+.phase1-stage:before{left:150px !important; right:150px !important;}
+.phase1-fox{left:26px !important; bottom:26px !important; width:82px !important; max-height:110px !important; object-fit:contain !important;}
+.phase1-prince{right:34px !important; bottom:24px !important; width:72px !important; max-height:116px !important; object-fit:contain !important;}
 .phase1-income{
     min-height:246px !important;
     padding-right:285px !important;
@@ -742,7 +758,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.3｜資產表按鈕貼近修正版</div>
+  <div class="small">v14.4｜退休目標角色放大修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
