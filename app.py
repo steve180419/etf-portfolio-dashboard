@@ -463,6 +463,11 @@ header[data-testid="stHeader"]{height:0rem !important; background:transparent !i
     background-repeat:no-repeat !important;
     border-radius:0 !important;
 }
+/* Crop generated KPI assets that contain stray text at the right edge. */
+.phase1-kpi-icon.crop-left{
+    background-size:auto 116% !important;
+    background-position:left center !important;
+}
 .phase1-kpi-card .label{font-size:15px !important; margin-bottom:7px !important;}
 .phase1-kpi-card .value{font-size:26px !important;}
 .phase1-kpi-card .note{font-size:13px !important;}
@@ -1058,7 +1063,7 @@ else:
     st.markdown(f"""
     <div class="phase1-kpi-grid">
       <div class="phase1-kpi-card green">
-        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['flag']})"></div>
+        <div class="phase1-kpi-icon crop-left" style="background-image:url(data:image/png;base64,{UI_ASSETS['flag']})"></div>
         <div><div class="label">總投入本金</div><div class="value">${t_amt:,}</div><div class="note">含買入成本與手續費</div></div>
       </div>
       <div class="phase1-kpi-card blue">
@@ -1070,11 +1075,11 @@ else:
         <div><div class="label">累積總配息</div><div class="value">${t_div:,}</div><div class="note">已領取配息</div></div>
       </div>
       <div class="phase1-kpi-card purple">
-        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['rose']})"></div>
+        <div class="phase1-kpi-icon crop-left" style="background-image:url(data:image/png;base64,{UI_ASSETS['rose']})"></div>
         <div><div class="label">未實現損益</div><div class="value {unrealized_tone}">${t_unrealized:+,}</div><div class="note">目前帳面損益</div></div>
       </div>
       <div class="phase1-kpi-card peach">
-        <div class="phase1-kpi-icon" style="background-image:url(data:image/png;base64,{UI_ASSETS['star']})"></div>
+        <div class="phase1-kpi-icon crop-left" style="background-image:url(data:image/png;base64,{UI_ASSETS['star']})"></div>
         <div><div class="label">總報酬率</div><div class="value {total_tone}">{total_return:+.2f}%</div><div class="note">含配息總報酬</div></div>
       </div>
     </div>
