@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import sqlite3
 import yfinance as yf
@@ -10,7 +11,7 @@ UI_ASSETS["sidebar_prince_final"] = "iVBORw0KGgoAAAANSUhEUgAAANwAAAC0CAYAAAD//UK
 
 
 # =====================================================
-# 鵬鵬的退休星球 v12.3
+# 鵬鵬的退休星球 v13.2
 # 重點：第一階段版面重構、星球首頁、KPI 卡片、退休進度區
 # =====================================================
 
@@ -84,7 +85,7 @@ c.execute('''
 conn.commit()
 
 # 2. 網頁佈局設定
-st.set_page_config(page_title="鵬鵬的退休星球 v12.3", layout="wide")
+st.set_page_config(page_title="鵬鵬的退休星球 v13.2", layout="wide")
 
 # ===== 網站密碼保護 =====
 def check_password():
@@ -740,7 +741,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v13.1｜資產明細表童話修正版</div>
+  <div class="small">v13.2｜資產明細表渲染修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1268,12 +1269,28 @@ else:
         <div class='planet-asset-table-btn'>查看全部資產　⌄</div>
         """
 
-    st.markdown(f"""
-    <div class='planet-table-wrap'>
-      <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
-      {asset_table_html}
-    </div>
-    """, unsafe_allow_html=True)
+    planet_table_component_html = f"""
+<style>
+html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; }}
+.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 18px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
+.planet-table-wrap:after {{ content:'🌱'; position:absolute; right:14px; top:8px; font-size:28px; opacity:.75; }}
+.planet-table-title {{ color:#11233f; font-weight:900; font-size:20px; margin:0 0 8px 0; letter-spacing:.3px; }}
+.planet-asset-table {{ width:100%; border-collapse:separate; border-spacing:0; border:1px solid #d8cda7; border-radius:12px; overflow:hidden; background:rgba(255,253,244,.78); font-size:13px; box-shadow:inset 0 1px 0 rgba(255,255,255,.7); }}
+.planet-asset-table th {{ background:linear-gradient(180deg,#e8efd4,#dce8c5); color:#246133; font-weight:900; text-align:center; padding:7px 9px; border-right:1px solid rgba(163,151,112,.24); white-space:nowrap; }}
+.planet-asset-table th:first-child {{ width:34px; }}
+.planet-asset-table td {{ text-align:center; padding:7px 9px; border-top:1px solid rgba(185,174,135,.28); border-right:1px solid rgba(185,174,135,.22); color:#16243b; font-weight:650; white-space:nowrap; }}
+.planet-asset-table td.asset-symbol {{ text-align:left; font-weight:900; color:#18304a; }}
+.planet-asset-table .star-cell {{ color:#c8932b; font-size:15px; }}
+.planet-asset-table .gain {{ color:#14783b; font-weight:950; }}
+.planet-asset-table .loss {{ color:#c51f2f; font-weight:950; }}
+.planet-asset-table-btn {{ display:block; width:max-content; margin:8px auto 0 auto; padding:6px 18px; border-radius:999px; background:linear-gradient(180deg,#eef7dc,#dcefc7); border:1px solid #bfd7a6; color:#2f6b30; font-size:13px; font-weight:900; text-align:center; box-shadow:0 3px 8px rgba(71,57,30,.08); }}
+</style>
+<div class='planet-table-wrap'>
+  <div class='planet-table-title'>📊 綜合資產明細表（核心現金流前置）</div>
+  {asset_table_html}
+</div>
+"""
+    components.html(planet_table_component_html, height=260, scrolling=False)
 
     show_cols = [
         'symbol', '總股數顯示', '預估年化現金殖利率顯示', '平均成本顯示', '目前現價顯示',
