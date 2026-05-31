@@ -742,7 +742,7 @@ section[data-testid="stSidebar"] .sidebar-planet-title{
 st.sidebar.markdown(f"""
 <div class="sidebar-planet-title">
   <div class="big">⭐ 鵬鵬的退休計畫系統</div>
-  <div class="small">v14.2｜資產表原生展開修正版</div>
+  <div class="small">v14.3｜資產表按鈕貼近修正版</div>
 </div>
 <div class="sidebar-hero">
   <img src="data:image/png;base64,{UI_ASSETS['sidebar_prince_final']}" />
@@ -1280,7 +1280,7 @@ else:
     planet_table_component_html = f"""
 <style>
 html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; }}
-.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 60px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
+.planet-table-wrap {{ position:relative; background:linear-gradient(180deg,rgba(255,254,246,.98),rgba(250,247,232,.94)); border:1px solid #d8cda7; border-radius:18px; padding:12px 16px 42px 16px; box-shadow:0 14px 28px rgba(95,75,30,.10); overflow:hidden; box-sizing:border-box; }}
 .planet-table-wrap:after {{ content:'🌱'; position:absolute; right:14px; top:8px; font-size:28px; opacity:.75; }}
 .planet-table-title {{ color:#11233f; font-weight:900; font-size:20px; margin:0 0 8px 0; letter-spacing:.3px; }}
 .planet-asset-table {{ width:100%; border-collapse:separate; border-spacing:0; border:1px solid #d8cda7; border-radius:12px; overflow:hidden; background:rgba(255,253,244,.78); font-size:13px; box-shadow:inset 0 1px 0 rgba(255,255,255,.7); }}
@@ -1311,7 +1311,7 @@ html, body {{ margin:0; padding:0; background:transparent; font-family: -apple-s
     st.markdown("""
     <style>
     div[data-testid="stHorizontalBlock"]:has(#asset-native-toggle-marker) {
-        margin-top: -50px !important;
+        margin-top: -72px !important;
         margin-bottom: 32px !important;
         position: relative !important;
         z-index: 20 !important;
